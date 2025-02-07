@@ -236,7 +236,7 @@ CLASS Member EXTENDS Database {
             $stmt->bind_param('s',$iUserName);
             echo($sql);
 
-            //Executing the statement
+            //Executing the statement  
             $stmt->execute();
             /* Store the result (to get properties) */
             $stmt->store_result();
@@ -270,10 +270,8 @@ CLASS Member EXTENDS Database {
                 // Now fetch the result data from stmt object into the bound variables
                 $stmt->fetch();
                 //Verify the password before continuing
-                /*
-                *IF (password_verify($iPassword, $tempPassword)) {
-                **/
-                IF ($iPassword==$tempPassword) {
+                
+                IF (password_verify($iPassword, $tempPassword)) {
                     $retCode = 0;
                     $entry = "MemberId:".$this->getMemberId().", UserName:".$this->getUserName()." - Successful login.";
 

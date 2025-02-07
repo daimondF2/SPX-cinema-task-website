@@ -8,4 +8,18 @@ IF (password_verify($test, $hash)) {
 } else {
     echo 'Invalid password.';
 }
+$options = [
+    'cost' => 12,
+];
+echo password_hash($test, PASSWORD_DEFAULT);
+echo password_hash($test, PASSWORD_BCRYPT, $options);
+
+$crypt = password_hash($test, PASSWORD_DEFAULT);
+$cryptcrypt = password_hash($crypt, PASSWORD_BCRYPT, $options);
+echo $cryptcrypt
+IF (password_verify($test, $cryptcrypt)) {
+    echo 'true';
+}  else {
+    echo 'false';
+}
 ?>
