@@ -12,4 +12,19 @@ Normally data will be migrated from the existing tables and encrypted.
 A utility program is normally written to perform the conversion.
 Consider creating a utility program (php) with a Cipher.php static class that has static functions to encrypt and decrypt 
 */
+$data = "This is a secret message";
+
+// Generate a 256-bit key and a 128-bit IV
+$key = openssl_random_pseudo_bytes(32);
+$iv = openssl_random_pseudo_bytes(16);
+
+// Encrypt the data
+$encrypted = openssl_encrypt($data, 'aes-256-cbc', $key, 0, $iv);
+
+// Decrypt the data
+$decrypted = openssl_decrypt($encrypted, 'aes-256-cbc', $key, 0, $iv);
+
+echo "Original Data: " . $data . "\n";
+echo "Encrypted Data: " . $encrypted . "\n";
+echo "Decrypted Data: " . $decrypted . "\n";
 >

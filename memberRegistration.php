@@ -85,12 +85,11 @@ FUNCTION addNew($member) {
     $password   = $_POST["password"];
     $password2  = $_POST["password2"];
     $message = "Adding new Member: (".$member->getMemberId().") ".$member->getUserName()."-".$member->getFullName();
-    $HSH_Pwd = password_hash($password, PASSWORD_DEFAULT);
     IF ($password != $password2) {
         $message = "Add Member: Passwords do not match. Try again!";
     } ELSE {
         $member->setUserName($_POST["userName"]);
-        $member->setPassword($HSH_Pwd);
+        $member->setPassword($_POST["password"]);
         $member->setFirstName($_POST["firstName"]);
         $member->setLastName($_POST["lastName"]);
         $member->setStreet($_POST["street"]);
@@ -137,7 +136,6 @@ FUNCTION update($member) {
     $password   = $_POST["password"];
     $password2  = $_POST["password2"];
     $userId     = $_POST["userId"];
-    $hash_password = password_hash($password, PASSWORD_DEFAULT);
     // echo("update  memberId=".$userId."<br/>");
 
     // // Check IF Member Order History requested - IF so navigate to Member Orders
@@ -153,7 +151,7 @@ FUNCTION update($member) {
 
         IF ($action == "upd") {
             $member->setUserName($_POST["userName"]);
-            $member->setPassword($hash_password);
+            $member->setPassword($_POST["password"]);
             $member->setFirstName($_POST["firstName"]);
             $member->setLastName($_POST["lastName"]);
             $member->setStreet($_POST["street"]);

@@ -313,12 +313,14 @@ CLASS Member EXTENDS Database {
     public function save() {
         $retCode = 9;
         $action = "Save";
+        $psword = $this->password;
+        $hshPWD = password_hash($psword, PASSWORD_DEFAULT);
 
         IF ($this->memberId) {  //Existing Record
             $sql = <<<EOD
                 UPDATE $this->tableName SET
                       userName = '$this->userName',
-                    password = '$this->password',
+                    password = '$hshPWD',
                     firstName = '$this->firstName',
                     lastName = '$this->lastName',
                     street = '$this->street',
@@ -350,7 +352,7 @@ CLASS Member EXTENDS Database {
                 (userName, password, firstName, lastName, street, town, state, postcode, phone, email)
                 VALUES (
                     '$this->userName',
-                    '$this->password',
+                    '$hshPWD',
                     '$this->firstName',
                     '$this->lastName',
                     '$this->street',
