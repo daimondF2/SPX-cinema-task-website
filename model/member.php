@@ -2,7 +2,7 @@
 
 require_once("database.php");
 // require_once("auditLog.php");
-// require_once(__DIR__."/../utilities/cipher.php");
+require_once(__DIR__."/../utilities/cipher.php");
 /**
  * STATIC secured_decrypt().
  * Two stage decryption of data
@@ -91,12 +91,12 @@ CLASS Member EXTENDS Database {
     }
     public function setFirstName($firstName=null) {
         IF ($firstName) {
-            $this->firstName = $firstName;
+            $this->firstName = cipher::encrypt($firstName);
         }
     }
     public function setLastName($lastName=null) {
         IF ($lastName) {
-            $this->lastName = $lastName;
+            $this->lastName = cipher::encrypt($lastName);
         }
     }
     public function setRole($role=null) {
@@ -106,32 +106,32 @@ CLASS Member EXTENDS Database {
     }
     public function setStreet($street=null) {
         IF ($street) {
-            $this->street = $street;
+            $this->street = cipher::encrypt($street);
         }
     }
     public function setTown($town=null) {
         IF ($town) {
-            $this->town = $town;
+            $this->town = cipher::encrypt($town);
         }
     }
     public function setState($state=null) {
         IF ($state) {
-            $this->state = $state;
+            $this->state = cipher::encrypt($state);
         }
     }
     public function setPostcode($postcode=null) {
         IF ($postcode) {
-            $this->postcode = $postcode;
+            $this->postcode = cipher::encrypt($postcode);
         }
     }
     public function setPhone($phone=null) {
         IF ($phone) {
-            $this->phone = $phone;
+            $this->phone = cipher::encrypt($phone);
         }
     }
     public function setEmail($email=null) {
         IF ($email) {
-            $this->email = $email;
+            $this->email = cipher::encrypt($email);
         }
     }
 
@@ -246,17 +246,17 @@ CLASS Member EXTENDS Database {
             $stmt->bind_result(
                 $this->memberId,
                 $this->userName,
-                $this->firstName,
-                $this->lastName,
+                cipher::decrypt($this->firstName),
+                cipher::decrypt($this->lastName),
                 //$this->password, // better not to store this
                 $tempPassword,
                 $this->role,
-                $this->street,
-                $this->town,
-                $this->state,
-                $this->postcode,
-                $this->phone,
-                $this->email);
+                cipher::decrypt($this->street),
+                cipher::decrypt($this->town),
+                cipher::decrypt($this->state),
+                cipher::decrypt($this->postcode),
+                cipher::decrypt($this->phone),
+                cipher::decrypt($this->email));
 
             /* Get the number of rows */
             $num_of_rows = $stmt->num_rows;

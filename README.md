@@ -1,4 +1,4 @@
-Audit Logging 
+Audit Logging  ------DOING
 Implement additional table in database
 image.png
 Create an "auditLog" object relational class (subclass to database) in the "model" subfolder
@@ -11,7 +11,7 @@ Update
 Insert
 Delete
 
-Password Hashing
+Password Hashing  ----- done
 Ensure the database field in Member table can store a hashed password rather than plaintext password 
 Member Business Object 
 Add code to login function to check the entered password against the hashed password
@@ -20,7 +20,7 @@ see for more information
 https://www.php.net/manual/en/function.password-hash.phpLinks to an external site.
 https://www.php.net/manual/en/function.password-verify.phpLinks to an external site.
 
-Data Encryption
+Data Encryption --------DONE
  Private information (other than password) will need to be encrypted when transferred to the database and then decrypted for maintenance by the user. 
 Using AES-256 encryption techniques to encrypt/decrypt sensitive information
 As per the sample code provided to you as a demonstration, incorporate AES-256 encryption of the Member data
@@ -33,7 +33,7 @@ Normally data will be migrated from the existing tables and encrypted.
 A utility program is normally written to perform the conversion.
 Consider creating a utility program (php) with a Cipher.php static class that has static functions to encrypt and decrypt 
 
-Cross-Site Scripting prevention
+Cross-Site Scripting prevention -- TODO
 Text fields being displayed may be subverted by adding XSS javascript.
 Add code to protect these fields from XSS.
 Add XSS prevention for Firstname and LastName fields
