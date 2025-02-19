@@ -1,7 +1,7 @@
 <?php
 
 require_once("database.php");
-// require_once("auditLog.php");
+require_once("auditlog.php");
 require_once(__DIR__."/../utilities/cipher.php");
 /**
  * STATIC secured_decrypt().
@@ -26,7 +26,7 @@ CLASS Member EXTENDS Database {
     private $email;
 
     private $tableName;
-    // private $auditLog; // Get an auditlog to write to database
+    private $auditLog; // Get an auditlog to write to database
 
     /**
      * Constructor.
@@ -70,7 +70,7 @@ CLASS Member EXTENDS Database {
     }
     public function __destruct() {
         $entry = "DESTROY member object: memberId:".$this->getMemberId().", UserName:".$this->getUserName();
-        $this->log(action:$action,entry:$entry);
+        $this->log(memberId:$this->getMemberId(),action:$action,entry:$entry);
         echo("Destroying Member object");
     }
 
@@ -143,39 +143,42 @@ CLASS Member EXTENDS Database {
         return ($this->userName);
     }
     public function getFirstName() {
-        return ($this->firstName);
+        return cipher::decrypt($this->firstName);
     }
     public function getLastName() {
-        return ($this->lastName);
+        return cipher::decrypt($this->lastName);
     }
     public function getFullName() {
-        return ($this->firstName)." ".($this->lastName);
+        return cipher::decrypt($this->firstName)." ".cipher::decrypt($this->lastName);
         ;
     }
     public function getRole() {
         return ($this->role);
     }
     public function getStreet() {
-        return ($this->street);
+        return cipher::decrypt($this->street);
     }
     public function getTown() {
-        return ($this->town);
+        return cipher::decrypt($this->town);
     }
     public function getState() {
-        return ($this->state);
+        return cipher::decrypt($this->state);
     }
     public function getPostcode() {
-        return ($this->postcode);
+        return cipher::decrypt($this->postcode);
     }
     public function getPhone() {
-        return ($this->phone);
+        return cipher::decrypt($this->phone);
     }
     public function getEmail() {
-        return ($this->email);
+        return cipher::decrypt($this->email);
     }
 
-    public function log($entity="User", $action=null,$entry=null) {
-        echo("<script>console.log('Entity:".$entity.", Action:".$action.", Entry:".$entry."');</script>");
+    public function log($memberId=null, $entity="User", $action=null,$entry=null) {
+        //$membe = getMemberId();
+        //echo("<script>console.log('Entity:".$entity.", Action:".$action.", Entry:".$entry."');</script>");
+        $this->auditLog = new auditLog();
+        $this->auditLog->addLog($memberId, $entity, $action, $entry);
     }
     /**
      * Method:  userExists
@@ -198,10 +201,10 @@ CLASS Member EXTENDS Database {
         //echo($numRows);
         IF ($numRows==1) {
             $entry = "Verified: User Exists: <".$this->getUserName().">";
-            $this->log(action:$action,entry:$entry);
+            $this->log(memberId:$this->getMemberId(),action:$action,entry:$entry);
         } ELSE {
             $entry = "Verified: User Does Not Exist:<".$this->getUserName().">";
-            $this->log(action:$action,entry:$entry);
+            $this->log(memberId:$this->getMemberId(),action:$action,entry:$entry);
         }
 
     return ($numRows==1);
@@ -246,17 +249,17 @@ CLASS Member EXTENDS Database {
             $stmt->bind_result(
                 $this->memberId,
                 $this->userName,
-                cipher::decrypt($this->firstName),
-                cipher::decrypt($this->lastName),
+                $this->firstName,
+                $this->lastName,
                 //$this->password, // better not to store this
                 $tempPassword,
                 $this->role,
-                cipher::decrypt($this->street),
-                cipher::decrypt($this->town),
-                cipher::decrypt($this->state),
-                cipher::decrypt($this->postcode),
-                cipher::decrypt($this->phone),
-                cipher::decrypt($this->email));
+                $this->street,
+                $this->town,
+                $this->state,
+                $this->postcode,
+                $this->phone,
+                $this->email);
 
             /* Get the number of rows */
             $num_of_rows = $stmt->num_rows;
@@ -265,7 +268,7 @@ CLASS Member EXTENDS Database {
             IF ($num_of_rows <= 0) {
                 $retCode = 1;
                 $entry = "UserName: <".$iUserName.">: - Failed Login: Invalid userName.";
-                $this->log($entry);
+                $this->log(entry:$entry);
             } ELSE {
                 // Now fetch the result data from stmt object into the bound variables
                 $stmt->fetch();
@@ -275,11 +278,11 @@ CLASS Member EXTENDS Database {
                     $retCode = 0;
                     $entry = "MemberId:".$this->getMemberId().", UserName:".$this->getUserName()." - Successful login.";
 
-                    $this->log(action:$action,entry:$entry);
+                    $this->log(memberId:$this->getMemberId(),action:$action,entry:$entry);
                 } ELSE {
                     $retCode = 2;
                     $entry = "UserName:".$this->getUserName().": - Failed Login: Invalid Password";
-                    $this->log(action:$action,entry:$entry);
+                    $this->log(memberId:$this->getMemberId(),action:$action,entry:$entry);
                 }
             }
             $stmt->close();
@@ -298,7 +301,7 @@ CLASS Member EXTENDS Database {
         $action = "logout";
 
         $entry = "memberId:".$this->getMemberId().", UserName:".$this->getUserName()." - has logged out";
-        $this->log(action:$action,entry:$entry);
+        $this->log(memberId:$this->getMemberId(),action:$action,entry:$entry);
 
         return $retCode;
     }
@@ -334,12 +337,12 @@ CLASS Member EXTENDS Database {
             // ECHO($sql."<br/>");
             IF ($this->run($sql)) {
                 $entry = "Update Successful: memberId:".$this->getMemberId().", UserName:".$this->getUserName();
-                $this->log(action:$action,entry:$entry);
+                $this->log(memberId:$this->getMemberId,action:$action,entry:$entry);
                 $this->commit();
                 $retCode = 0;
             } ELSE {
                 $entry = "Update Failed:  memberId:".$this->getMemberId().", UserName:".$this->getUserName().", sql=".$sql. ", Error:" . $this->getError();
-                $this->log(action:$action,entry:$entry);
+                $this->log(memberId:$this->getMemberId(),action:$action,entry:$entry);
                 $retCode = 1;
             }
 
@@ -368,13 +371,13 @@ CLASS Member EXTENDS Database {
                 $this->memberId = $this->getConn()->insert_id;
 
                 $entry = "Add Successful: memberId:".$this->memberId.", UserName:".$this->userName;
-                $this->log(action:$action,entry:$entry);
+                $this->log(memberId:$this->getMemberId(),action:$action,entry:$entry);
                 $this->commit();
                 $retCode = 0;
             } ELSE {
                 $entry = "Add Failed:  memberId:".$this->memberId.", UserName:".$this->userName.", sql=".$sql. ", Error:" . $this->getError();
                 // ECHO("User Save Add Error: " . $sql . "<br>" . $this-getError());
-                $this->log(action:$action,entry:$entry);
+                $this->log(memberId:$this->getMemberId(),action:$action,entry:$entry);
                 $retCode = 2;
             }
 
@@ -400,14 +403,14 @@ CLASS Member EXTENDS Database {
 
         IF ($this->runMulti($sql) === TRUE) {
             $entry = "Delete Successful: memberId:".$this->memberId.", UserName:".$this->userName;
-            $this->log(action:$action,entry:$entry);
+            $this->log(memberId:$this->getMemberId(),action:$action,entry:$entry);
             $this->commit();            # Once User is deleted ,
             # then force User to login again or create new User
             $_SESSION["user"]=null;
             $retCode = 0;
         } ELSE {
             $entry = "Delete Failed: memberId:".$this->memberId.", UserName:".$this->userName.", SQL: " . $sql . ", Error:" . $this->getError();
-            $this->log(action:$action,entry:$entry);
+            $this->log(memberId:$this->getMemberId(),action:$action,entry:$entry);
         }
     // } ELSE IF ($action == "ord") {
     //     header("Location: UserOrders.php");

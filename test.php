@@ -28,7 +28,7 @@ IF (password_verify($test, $cryptcrypt)) {
 // Example Usage
 
 
-$method = 'aes-256-cbc';
+/**$method = 'aes-256-cbc';
 $key = openssl_random_pseudo_bytes(32); // 32 bytes for AES-256
 $ivLength = 16; // IV must be 16 bytes for AES-256-CBC
 $original = "Hello, World!";
@@ -49,6 +49,9 @@ $decrypted = openssl_decrypt($en, $method, $key, 0, $iv);
 
 echo "Original: $original\n";
 echo "Encrypted: $encrypted\n";
-echo "Decrypted: $decrypted\n";
+echo "Decrypted: $decrypted\n";*/
+date_default_timezone_set("Australia/Sydney");
+$scripttest = date("Y-m-d") ." ". date("H:i:s");
+echo $scripttest;
 
 ?>
