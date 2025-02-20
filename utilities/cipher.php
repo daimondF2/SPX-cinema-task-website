@@ -46,12 +46,18 @@ class Cipher {
 
     // Decrypt Data
     public static function decrypt($data) {
-        $data = base64_decode($data);
-        $key2 = substr($data, 0, 32); //extract key
-        $iv = substr($data, 32, self::$ivLength); // Extract IV
-        $encrypted = substr($data, 48); // Extract encrypted part
-        return openssl_decrypt($encrypted, self::$method, $key2, 0, $iv);
-    }
+        if ($data == null) {
+            return null;
+        } else {
+            # code...
+            $data = base64_decode($data); //decodes
+            $key2 = substr($data, 0, 32); //extract key
+            $iv = substr($data, 32, self::$ivLength); // Extract IV
+            $encrypted = substr($data, 48); // Extract encrypted part
+            return openssl_decrypt($encrypted, self::$method, $key2, 0, $iv);
+        }
+        }
+        
 }
 /**$res = openssl_pkey_new();
 if ($res==false) {

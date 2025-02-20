@@ -70,7 +70,7 @@ CLASS Member EXTENDS Database {
     }
     public function __destruct() {
         $entry = "DESTROY member object: memberId:".$this->getMemberId().", UserName:".$this->getUserName();
-        $this->log(memberId:$this->getMemberId(),action:$action,entry:$entry);
+        $this->log(memberId:$this->getMemberId(),entry:$entry);
         echo("Destroying Member object");
     }
 
@@ -282,7 +282,7 @@ CLASS Member EXTENDS Database {
                 } ELSE {
                     $retCode = 2;
                     $entry = "UserName:".$this->getUserName().": - Failed Login: Invalid Password";
-                    $this->log(memberId:$this->getMemberId(),action:$action,entry:$entry);
+                    $this->log(action:$action,entry:$entry);
                 }
             }
             $stmt->close();
@@ -337,7 +337,7 @@ CLASS Member EXTENDS Database {
             // ECHO($sql."<br/>");
             IF ($this->run($sql)) {
                 $entry = "Update Successful: memberId:".$this->getMemberId().", UserName:".$this->getUserName();
-                $this->log(memberId:$this->getMemberId,action:$action,entry:$entry);
+                $this->log(memberId:$this->getMemberId(),action:$action,entry:$entry);
                 $this->commit();
                 $retCode = 0;
             } ELSE {
@@ -369,9 +369,9 @@ CLASS Member EXTENDS Database {
             IF ($this->run($sql)) {
                 // Once INSERT is done, retrieve the new memberId and store in User object
                 $this->memberId = $this->getConn()->insert_id;
-
+                $action = "New User";
                 $entry = "Add Successful: memberId:".$this->memberId.", UserName:".$this->userName;
-                $this->log(memberId:$this->getMemberId(),action:$action,entry:$entry);
+                $this->log(action:$action,entry:$entry);
                 $this->commit();
                 $retCode = 0;
             } ELSE {
@@ -403,7 +403,7 @@ CLASS Member EXTENDS Database {
 
         IF ($this->runMulti($sql) === TRUE) {
             $entry = "Delete Successful: memberId:".$this->memberId.", UserName:".$this->userName;
-            $this->log(memberId:$this->getMemberId(),action:$action,entry:$entry);
+            $this->log(action:$action,entry:$entry);
             $this->commit();            # Once User is deleted ,
             # then force User to login again or create new User
             $_SESSION["user"]=null;

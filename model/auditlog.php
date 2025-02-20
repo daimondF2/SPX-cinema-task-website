@@ -11,14 +11,16 @@ class auditLog EXTENDS Database {
         $this->tableName = "auditLog";
         //$this->setMemberId($memberId);
     }
+    //DELETING MEMBERS!!!
     public function addLog($memberId = null, $entity=null, $action=null, $entry=null) {
-        $time = date("Y-m-d") ." ". date("H:i:s");
+        $time = date("Y-m-d") ." ". date("H:i:s"); //GET TIME DATE
         /**string $entity = null,
         string $action =null,
         string $entry=null,
         //integer $memberId;*/
         //$memberId = 1;
         $sql = "INSERT INTO $this->tableName (timestamp, entity, action, entry, memberId) VALUES ('$time', '$entity', '$action', '$entry', " . ($memberId !== null ? $memberId : "NULL") . ")";
+        //insert SQL
         //string $entity = null,
         if (!$this->run($sql)) {
             //deal with error 
