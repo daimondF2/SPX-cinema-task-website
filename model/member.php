@@ -3,6 +3,7 @@
 require_once("database.php");
 require_once("auditlog.php");
 require_once(__DIR__."/../utilities/cipher.php");
+require_once(__DIR__."/../utilities/santize.php");
 /**
  * STATIC secured_decrypt().
  * Two stage decryption of data
