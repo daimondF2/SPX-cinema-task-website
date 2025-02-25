@@ -24,7 +24,7 @@ class Database {
      * @param  type $dbserver    .
      * @return type A         return value summary.
      */
-    public function __construct($dbServer="localhost",$dbUser="12SEN", $dbPassword="12SEN",$dbName="12sendb")
+    public function __construct($dbServer=Null,$dbUser="YEE10", $dbPassword="YEE10",$dbName="12sendb")
     {
         // echo("New Database<br/>");
         IF (!$this->conn) {
@@ -43,8 +43,8 @@ class Database {
     public function setDbServer($dbServer='localhost') {
         IF ($dbServer) {
             $this->dbServer = $dbServer;
-        // } ELSE {
-        //     // $this->dbServer = $_SERVER['SERVER_NAME'];
+        } ELSE {
+            $this->dbServer = $_SERVER['SERVER_NAME'];
         //     $this->dbServer = "localhost";
         }
     }
