@@ -33,7 +33,7 @@ Normally data will be migrated from the existing tables and encrypted.
 A utility program is normally written to perform the conversion.
 Consider creating a utility program (php) with a Cipher.php static class that has static functions to encrypt and decrypt 
 
-Cross-Site Scripting prevention -- DOING
+Cross-Site Scripting prevention -- DONE
 Text fields being displayed may be subverted by adding XSS javascript.
 Add code to protect these fields from XSS.
 Add XSS prevention for Firstname and LastName fields
