@@ -3,7 +3,7 @@
 require_once("database.php");
 require_once("auditlog.php");
 require_once(__DIR__."/../utilities/cipher.php");
-require_once(__DIR__."/../utilities/santize.php");
+//require(__DIR__."/../utilities/sanitize.php");
 /**
  * STATIC secured_decrypt().
  * Two stage decryption of data
@@ -231,7 +231,6 @@ CLASS Member EXTENDS Database {
 
         $retCode = 9;
         $action = "Login";
-
         $sql = "SELECT u.memberId, u.userName, u.firstName, u.lastName, u.password, u.role, u.street, u.town, u.state, u.postcode, u.phone, u.email FROM ".$this->tableName." AS u WHERE u.userName = ?";
 
         TRY {

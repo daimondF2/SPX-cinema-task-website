@@ -73,14 +73,13 @@ echo $scripttest;
  * http://localhost/testXSS.php?message=<script>location.href='http://www.google.com';</script>
  *
  */
-    $message="Nothing to say";
+ /**   $message="<script>alert(1)</script> ";
 
-    if (isset($_GET["message"])) {
-        $message = $_GET["message"];
+    *if (isset($_GET["message"])) {
+   *     $message = $_GET["message"];
 
-    }
-    echo($message);
-
+   * }*/
+    //echo($message);
 /**
  * HTML Encoding:
  * PHP htmlspecialchars function will convert any HTML special characters into their HTML encodings,
@@ -89,11 +88,11 @@ echo $scripttest;
  *      $input = htmlspecialchars($_GET['input']);
  *      $input = htmlspecialchars($_POST['input']);
  */
-    echo(htmlspecialchars($_GET["message"]));
-    echo(htmlentities($message,ENT_QUOTES, 'UTF-8')."<br/>");
-    echo(htmlspecialchars($message)."<br/>");
-    echo(urlencode($message)."<br/>");
-
+    //echo(htmlspecialchars($_GET["message"]));
+   /** echo(htmlentities($message, ENT_QUOTES, 'UTF-8')."<br/>");
+    *echo(htmlspecialchars($message)."<br/>");
+    *echo(urlencode($message)."<br/>");
+*/
 /**
  * URL Encoding:
  * When outputting a dynamically generated URL, PHP provides the urlencode function
@@ -112,6 +111,13 @@ echo $scripttest;
 
     // $query_string =
     //echo(urlencode($message)."<br/>");
-
-
+   // $iPassword = htmlspecialchars("<script>alert(1)</script>");
+    $iPassword = '<>b';
+    $tempPassword = '$2y$10$kJVFKgo1YEAMrFDEJZ5s.uLBwh9K0yNZbRS8518O2HvL5Hlsfk3gW';
+    echo("hi");
+    
+    if (password_verify($iPassword, $tempPassword)) {
+        echo("true");
+    
+    }
 ?>

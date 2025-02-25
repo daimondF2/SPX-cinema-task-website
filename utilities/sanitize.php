@@ -10,12 +10,12 @@ function escapeGet($string){
     return htmlentities($string,ENT_QUOTES, 'UTF-8');
 
 }
-function escapePost(){
+function escapePost($string){
     return htmlspecialchars($string);
 
 }
 function decodeUrl(){
-    return urlencode($message)
+    return urlencode($message);
 
 }
 

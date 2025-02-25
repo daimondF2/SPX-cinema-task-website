@@ -1,6 +1,6 @@
 <?php
 require("model/member.php");
-
+require("utilities/sanitize.php");
 // First check IF we are already logged in - get session data with the session_start
 session_start();
 // IF UserName exists then already logged in - so we are updating Member details
@@ -88,16 +88,16 @@ FUNCTION addNew($member) {
     IF ($password != $password2) {
         $message = "Add Member: Passwords do not match. Try again!";
     } ELSE {
-        $member->setUserName($_POST["userName"]);
+        $member->setUserName(escapePost($_POST["userName"]));
         $member->setPassword($_POST["password"]);
-        $member->setFirstName($_POST["firstName"]);
-        $member->setLastName($_POST["lastName"]);
-        $member->setStreet($_POST["street"]);
-        $member->setTown($_POST["town"]);
-        $member->setState($_POST["state"]);
-        $member->setPostcode($_POST["postcode"]);
-        $member->setPhone($_POST["phone"]);
-        $member->setEmail($_POST["email"]);
+        $member->setFirstName(escapePost($_POST["firstName"]));
+        $member->setLastName(escapePost($_POST["lastName"]));
+        $member->setStreet(escapePost($_POST["street"]));
+        $member->setTown(escapePost($_POST["town"]));
+        $member->setState(escapePost($_POST["state"]));
+        $member->setPostcode(escapePost($_POST["postcode"]));
+        $member->setPhone(escapePost($_POST["phone"]));
+        $member->setEmail(escapePost($_POST["email"]));
 
         $action     = $_POST["btnAction"];  #which button was pressed?
 
@@ -150,16 +150,16 @@ FUNCTION update($member) {
         $userName   = $_POST["userName"];
 
         IF ($action == "upd") {
-            $member->setUserName($_POST["userName"]);
+            $member->setUserName(escapePost($_POST["userName"]));
             $member->setPassword($_POST["password"]);
-            $member->setFirstName($_POST["firstName"]);
-            $member->setLastName($_POST["lastName"]);
-            $member->setStreet($_POST["street"]);
-            $member->setTown($_POST["town"]);
-            $member->setState($_POST["state"]);
-            $member->setPostcode($_POST["postcode"]);
-            $member->setPhone($_POST["phone"]);
-            $member->setEmail($_POST["email"]);
+            $member->setFirstName(escapePost($_POST["firstName"]));
+            $member->setLastName(escapePost($_POST["lastName"]));
+            $member->setStreet(escapePost($_POST["street"]));
+            $member->setTown(escapePost($_POST["town"]));
+            $member->setState(escapePost($_POST["state"]));
+            $member->setPostcode(escapePost($_POST["postcode"]));
+            $member->setPhone(escapePost($_POST["phone"]));
+            $member->setEmail(escapePost($_POST["email"]));
 
             $retCode = $member->save();
             IF ($retCode==0) {

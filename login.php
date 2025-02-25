@@ -8,6 +8,7 @@ session_unset();
 session_start();
 
 require("model/member.php");
+//require("utilities/sanitize.php");
 
 $message="Please login to this wonderful website";
 
@@ -16,7 +17,7 @@ $method  = $_SERVER["REQUEST_METHOD"];
 IF ($method=="POST") {
 
     $userName = $_POST["userName"];
-    $password = $_POST["password"];
+    $password = $_POST["password"]; //password hashing does not like <>b
     echo("Pwd: ".$password);
 
     $member = new Member();
