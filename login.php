@@ -18,7 +18,7 @@ IF ($method=="POST") {
 
     $userName = $_POST["userName"];
     $password = $_POST["password"]; //password hashing does not like <>b
-    echo("Pwd: ".$password);
+    //echo("Pwd: ".$password);
 
     $member = new Member();
 

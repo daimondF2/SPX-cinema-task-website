@@ -103,7 +103,7 @@ FUNCTION addNew($member) {
 
         IF ($member->userExists()) {
         // echo("member: ".$userName." exists");
-            $message = "Add Member: UserName (".$userName.") already exists! Please choose another";
+            $message = "Add Member: UserName (".$member->getUserName().") already exists! Please choose another";
         } ELSE {
         // Check that password is entered the same twice as a Verification
 
@@ -167,7 +167,7 @@ FUNCTION update($member) {
                 //header("Location: MemberRegistration.php");
             } ELSE {
                 $message = "Error: " . $sql . "<br>" . $conn->error;
-                echo($message);
+                //echo($message);
             }
         } ELSE IF ($action == "del") {
             // Check IF Member has any basket/orders and DELETE them first ...maybe CASCADE delete them FIRST
@@ -179,7 +179,7 @@ FUNCTION update($member) {
                 header("Location: memberRegistration.php");
             } ELSE {
                 $message = "Error: " . $sql . "<br>" . $conn->error;
-                echo($message);
+                //echo($message);
             }
 
         }

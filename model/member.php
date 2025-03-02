@@ -64,7 +64,7 @@ CLASS Member EXTENDS Database {
         $this->setPostcode($postcode);
         $this->setPhone($phone);
         $this->setEmail($email);
-        echo("here");
+        //echo("here");
         // IF ($this->userExists()) {
         //     // Use this bit to get Aggregations
         // }
@@ -72,7 +72,7 @@ CLASS Member EXTENDS Database {
     public function __destruct() {
         $entry = "DESTROY member object: memberId:".$this->getMemberId().", UserName:".$this->getUserName();
         $this->log(memberId:$this->getMemberId(),entry:$entry);
-        echo("Destroying Member object");
+        //echo("Destroying Member object");
     }
 
     public function setMemberId($memberId) {
@@ -237,7 +237,7 @@ CLASS Member EXTENDS Database {
             //NOTE: This is too complex for a generic Database Class Function
             $stmt = $this->getConn()->prepare($sql);
             $stmt->bind_param('s',$iUserName);
-            echo($sql);
+            //echo($sql);
 
             //Executing the statement  
             $stmt->execute();
