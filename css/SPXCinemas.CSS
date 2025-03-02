@@ -9,7 +9,7 @@
 }
 /* common style for all body content in page */
 body {
-    background-color: rgb(217, 227, 173);
+    background-color: rgb(101, 117, 29);
     min-height:     100vh;
     min-width:      100vw;
     display:        flex;
@@ -21,7 +21,7 @@ body {
 /* ===============   Header or Banner styling   ================*/
 header {
     /* properties for the header bar & logo */
-    background-color: rgb(70, 116, 132);
+    background-color: rgb(162, 115, 43);
     background-image: url('../img/logo.png');
     background-repeat: no-repeat;
     background-position: left;
@@ -100,7 +100,7 @@ maincontent {
 /* ===============   Footer styling   ================*/
 
 footer {
-    background-color: bisque;
+    background-color: rgb(108, 76, 38);
     font-size: 1vw;
     min-height: 2vh;
     display: flex;

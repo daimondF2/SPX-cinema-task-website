@@ -15,23 +15,84 @@ Consider creating a utility program (php) with a Cipher.php static class that ha
 
 
 class Cipher {
-    /**private static $method = 'aes-256-cbc';
-    private static $key = openssl_random_pseudo_bytes(32);
-    private static $ivlength = 16;
+//--- Create Two Random Keys And Save Them In Your Configuration File ---
+// https://www.php.net/manual/en/function.openssl-encrypt.php
 
-    public static function encrypt($data) {
-        $iv = openssl_random_pseudo_bytes(self::$ivlength);
-        $encrypted = openssl_encrypt($data, self::$method, self::$key, 0, $iv);
-        base64_encode($iv . $encrypted);
-        return $encrypted;
-    }
-    public static function decrypt($data) {
-        $iv = openssl_random_pseudo_bytes(self::$ivlength);
-        $decrypted = openssl_decrypt($data, self::$method, self::$key, 0, $iv);
-        return $decrypted;
+// Create The First Key
+//echo("define('FIRSTKEY','");
+//echo base64_encode(openssl_random_pseudo_bytes(32));
+//echo("');".PHP_EOL);
+// Create The Second Key
+//echo("define('SECONDKEY','");
+//echo base64_encode(openssl_random_pseudo_bytes(64));
+//echo("');".PHP_EOL);
+/**
+ *     /**
+     * SYMMETRIC ENCRYPTION EXAMPLE
+     * ============================
+     * STATIC secured_encrypt().
+     * Two stage encryption of data - encrypt and then hash
+     *
+     * Relies of config.php file to declare FIRSTKEY and SECONDKEY constants
+     * see: https://www.php.net/manual/en/function.openssl-encrypt.php
+     */
+/*    public static function secured_encrypt($data=null) {
+        {
+        // $first_key = base64_decode(self::$FIRSTKEY);
+        $first_key = base64_decode(FIRSTKEY);
+        // $second_key = base64_decode(self::$SECONDKEY);
+        $second_key = base64_decode(SECONDKEY);
+
+        $method = "aes-256-cbc";
+
+        //Generatea random initialisation vector
+        $iv_length = openssl_cipher_iv_length($method);
+        $iv = openssl_random_pseudo_bytes($iv_length);
+
+        // Encryption using AES 256 CBC
+        $first_encrypted = openssl_encrypt($data,$method,$first_key, OPENSSL_RAW_DATA ,$iv);
+        // Hash-based Message Authentication Code
+        $second_encrypted = hash_hmac('sha3-512', $first_encrypted, $second_key, TRUE);
+
+        $output = base64_encode($iv.$second_encrypted.$first_encrypted);
+        return $output;
+        }
     }
 
-}*/
+    /**
+     * STATIC secured_decrypt().
+     * Two stage decryption of data
+     *
+     * Relies of config.php file to declare FIRSTKEY and SECONDKEY constants
+     * see: https://www.php.net/manual/en/function.openssl-encrypt.php
+     */
+    /**public static function secured_decrypt($input=null)
+    {
+        if ($input) {
+            $first_key = base64_decode(FIRSTKEY);
+            $second_key = base64_decode(SECONDKEY);
+
+            $mix = base64_decode($input);
+
+            $method = "aes-256-cbc";
+            $iv_length = openssl_cipher_iv_length($method);
+
+            $iv = substr($mix,0,$iv_length);
+            $second_encrypted = substr($mix,$iv_length,64);
+            $first_encrypted = substr($mix,$iv_length+64);
+
+            $data = openssl_decrypt($first_encrypted,$method,$first_key,OPENSSL_RAW_DATA,$iv);
+            $second_encrypted_new = hash_hmac('sha3-512', $first_encrypted, $second_key, TRUE);
+
+            if (hash_equals($second_encrypted,$second_encrypted_new))
+                return $data;
+        }
+        return false;
+    }
+}
+
+*/
+
     private static $method = 'aes-256-cbc';
     private static $keylength = 32; // 32 bytes for AES-256
     private static $ivLength = 16; // IV must be 16 bytes for AES-256-CBC
@@ -39,7 +100,7 @@ class Cipher {
     // Encrypt Data
     public static function encrypt($data) {
         $iv = openssl_random_pseudo_bytes(self::$ivLength); // Generate a random IV
-        $key = openssl_random_pseudo_bytes(self::$keylength);
+        $key = openssl_random_pseudo_bytes(self::$keylength); //generates a random key
         $encrypted = openssl_encrypt($data, self::$method, $key, 0, $iv);
         return base64_encode($key. $iv . $encrypted); // Store key + Store IV + encrypted data
     }
@@ -58,42 +119,6 @@ class Cipher {
         }
         }
         
-}
-/**$res = openssl_pkey_new();
-if ($res==false) {
-    echo('<p>'.openssl_error_string().'</p>');
-}
-echo("res");
-var_dump($res);
-// Extract the private key from $res to $private_key
-openssl_pkey_export($res, $private_key);
+    }
 
-$bob_key = openssl_pkey_get_details($res);
-echo ("private:");
-echo $private_key, PHP_EOL;
-var_dump($private_key);
-
-$bob_public_key = $bob_key['key'];
-
-echo ("pub:");
-echo $bob_public_key, PHP_EOL;
-var_dump($bob_public_key);
-/*That's the basic infrastructure you had in your code and now is code that Bob executes. 
-Bob generates the key pair and sends to Alice, in a real environment there must be a public key sharing mechanism.
-
-//When Alice gets Bob's public key, she cyphers her message with this key:
-
-/** ALICE CODE **/
-/**$alice_msg = "Hi Bob, im sending you a private message";
-openssl_public_encrypt($alice_msg, $pvt_msg, $bob_public_key);
-
-echo $alice_msg, PHP_EOL;
-
-echo $pvt_msg, PHP_EOL;
-//Finally Bob receives the message and decrypts it
-
-/**  BOB CODE **/
-/**openssl_private_decrypt( $pvt_msg, $bob_received_msg, $private_key);
-echo $bob_received_msg;
-*/
 ?>
