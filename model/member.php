@@ -71,7 +71,7 @@ CLASS Member EXTENDS Database {
     }
     public function __destruct() {
         $entry = "DESTROY member object: memberId:".$this->getMemberId().", UserName:".$this->getUserName();
-        $this->log(memberId:$this->getMemberId(),entry:$entry);
+        //$this->log(memberId:$this->getMemberId(),entry:$entry);
         //echo("Destroying Member object");
     }
 
