@@ -164,6 +164,7 @@ FUNCTION update($member) {
             $retCode = $member->save();
             IF ($retCode==0) {
                 $message = "Member record updated successfully";
+                $_SESSION["member"] =  serialize($member);
                 //header("Location: MemberRegistration.php");
             } ELSE {
                 $message = "Error: " . $sql . "<br>" . $conn->error;
@@ -204,7 +205,7 @@ FUNCTION update($member) {
                     <div class="row mt-3">
                         <div class="col">
                         <label for "userName" class="form-label">userName: </label>
-                        <input class="form-control" name="userName" type="text" size="10" maxlength="10" value="<?php echo($userName);?>"></input>
+                        <input class="form-control" name="userName" type="text" size="10" maxlength="10" value="<?php echo($member->getUserName());?>"></input>
                         <input type="hidden" name="userId" type="text" value="<?php echo($userId);?>"></input>
                         </div>
                         <div class="col">
@@ -219,39 +220,39 @@ FUNCTION update($member) {
                     <div class="row  mt-5">
                         <div class="col">
                         <label for "firstName" class="form-label">First Name: </label>
-                        <input class="form-control" name="firstName" type="text" size="35" maxlength="35" value="<?php echo($firstName); ?>" ></input>
+                        <input class="form-control" name="firstName" type="text" size="35" maxlength="35" value="<?php echo($member->getFirstName()); ?>" ></input>
                         </div>
                         <div class="col">
                         <label for "lastName" class="form-label">Last Name: </label>
-                        <input class="form-control" name="lastName" type="text" size="35" maxlength="35" value="<?php echo($lastName); ?>"></input>
+                        <input class="form-control" name="lastName" type="text" size="35" maxlength="35" value="<?php echo($member->getLastName()); ?>"></input>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-4">
                             <label for "street" class="form-label">Street: </label>
-                            <input class="form-control" name="street" type="text" size="50" maxlength="50" value="<?php echo($street); ?>"></input>
+                            <input class="form-control" name="street" type="text" size="50" maxlength="50" value="<?php echo($member->getStreet()); ?>"></input>
                         </div>
                         <div class="col-4">
                             <label for "town" class="form-label">Town: </label>
-                            <input class="form-control" name="town" type="text" size="50" maxlength="50" value="<?php echo($town); ?>"></input>
+                            <input class="form-control" name="town" type="text" size="50" maxlength="50" value="<?php echo($member->getTown()); ?>"></input>
                         </div>
                         <div class="col-1">
                             <label for "state" class="form-label">State: </label>
-                            <input class="form-control" name="state" type="text" size="3" maxlength="3" value="<?php echo($state); ?>"></input>
+                            <input class="form-control" name="state" type="text" size="3" maxlength="3" value="<?php echo($member->getState()); ?>"></input>
                         </div>
                         <div class="col-1">
                             <label for "postcode" class="form-label">Postcode: </label>
-                            <input class="form-control" name="postcode" type="text" size="4" maxlength="4" value="<?php echo($postcode); ?>"></input>
+                            <input class="form-control" name="postcode" type="text" size="4" maxlength="4" value="<?php echo($member->getPostcode()); ?>"></input>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-2">
                             <label for "phone" class="form-label">Phone: </label>
-                            <input class="form-control" name="phone" type="text" size="4" maxlength="12" value="<?php echo($phone); ?>"></input>
+                            <input class="form-control" name="phone" type="text" size="4" maxlength="12" value="<?php echo($member->getPhone()); ?>"></input>
                         </div>
                         <div class="col-3">
                             <label for "email" class="form-label">Email: </label>
-                            <input class="form-control" name="email" type="email" size="50" maxlength="50" value="<?php echo($email); ?>"></input>
+                            <input class="form-control" name="email" type="email" size="50" maxlength="50" value="<?php echo($member->getEmail()); ?>"></input>
                         </div>
                     </div>
 
