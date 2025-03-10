@@ -13,8 +13,6 @@ A utility program is normally written to perform the conversion.
 Consider creating a utility program (php) with a Cipher.php static class that has static functions to encrypt and decrypt 
 */
 
-
-class Cipher {
 //--- Create Two Random Keys And Save Them In Your Configuration File ---
 // https://www.php.net/manual/en/function.openssl-encrypt.php
 
@@ -92,6 +90,8 @@ class Cipher {
 }
 
 */
+class Cipher {
+
 
     private static $method = 'aes-256-cbc';
     private static $keylength = 32; // 32 bytes for AES-256

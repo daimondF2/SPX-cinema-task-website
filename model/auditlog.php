@@ -11,7 +11,7 @@ class auditLog EXTENDS Database {
         $this->tableName = "auditLog";
         //$this->setMemberId($memberId);
     }
-    //DELETING MEMBERS!!!
+
     public function addLog($memberId = null, $entity=null, $action=null, $entry=null) {
         $time = date("Y-m-d") ." ". date("H:i:s"); //GET TIME DATE
         /**string $entity = null,
