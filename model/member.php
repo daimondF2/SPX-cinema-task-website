@@ -51,7 +51,7 @@ CLASS Member EXTENDS Database {
     ) {
         parent::__construct(); // gets a database connection
         $this->tableName = "members";
-
+        $this->auditLog = new auditLog();
         $this->setMemberId($memberId);
         $this->setUserName($userName);
         $this->setPassword($password);
@@ -64,6 +64,7 @@ CLASS Member EXTENDS Database {
         $this->setPostcode($postcode);
         $this->setPhone($phone);
         $this->setEmail($email);
+        
         //echo("here");
         // IF ($this->userExists()) {
         //     // Use this bit to get Aggregations
@@ -175,10 +176,9 @@ CLASS Member EXTENDS Database {
         return cipher::decrypt($this->email);
     }
 
-    public function log($memberId=null, $entity="User", $action=null,$entry=null) {
+    public function log($memberId=null, $entity="member", $action=null,$entry=null) {
         //$membe = getMemberId();
         //echo("<script>console.log('Entity:".$entity.", Action:".$action.", Entry:".$entry."');</script>");
-        $this->auditLog = new auditLog();
         $this->auditLog->addLog($memberId, $entity, $action, $entry);
     }
     /**
