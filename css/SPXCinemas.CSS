@@ -107,3 +107,37 @@ footer {
     align-items: center;   /* vertical */
     justify-content:     center;   /* vertical align text */
 }
+
+/* ========== movie styling ===========*/
+movie {
+    display: block; /* Makes <movie> behave like a div */
+    border: 2px solid #ccc;
+    background-color: #fff;
+    padding: 15px;
+    margin: 20px auto;
+    width: fit-content;
+    max-width: 600px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+  
+  
+  /* Optional: style elements inside */
+  movie h4 {
+    margin-top: 0;
+    font-size: 1.5em;
+    color: #c00;
+  }
+  
+  movie img {
+    max-width: 100%;
+    border-radius: 5px;
+  }
+  
+  movie div, movie iframe, movie h5 {
+    margin-top: 10px;
+  }
+}
+
+locations {
+    margin-top:0;
+}

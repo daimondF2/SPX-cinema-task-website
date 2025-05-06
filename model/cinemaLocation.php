@@ -122,7 +122,7 @@ CLASS CinemaLocation EXTENDS Database {
                     $this->setAddress($result['address']);
                 }
             }
-            echo("Get Location: ".$this->getLocationId()."<br/>");
+            //echo("Get Location: ".$this->getLocationId()."<br/>");
 
         }
 
@@ -148,7 +148,7 @@ CLASS CinemaLocation EXTENDS Database {
                 address : $result['address'],
                 dbGet : False
             );
-            echo("Loading Location: ".$cinemaLocation->getLocationName()."<br/>");
+            //echo("Loading Location: ".$cinemaLocation->getLocationName()."<br/>");
             $cinemaLocations[] = $cinemaLocation; // appending each location to my list of locations
         }
         RETURN $cinemaLocations;

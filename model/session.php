@@ -114,7 +114,7 @@ CLASS Session EXTENDS Database {
             IF ($dbGet) {
                 $sql = "SELECT ".implode(', ',self::$fieldNames)." FROM ".self::$tableName." WHERE ".self::$pk." = ?";
 
-                echo("Get Session data from DB: ".$sql." ".$this->getSessionId()."<br/>" );
+                //echo("Get Session data from DB: ".$sql." ".$this->getSessionId()."<br/>" );
 
                 $results = $this->query($sql,[$this->getSessionId()]);
 
@@ -150,12 +150,12 @@ CLASS Session EXTENDS Database {
              return [];
         }
 
-        echo("Load Sessions: ".$sql." ".implode(',', $params)."<br/>");
+        //echo("Load Sessions: ".$sql." ".implode(',', $params)."<br/>");
 
         $db = new Database();
         $results = $db->query($sql,$params); // Pass parameters as an array
         FOREACH($results AS $result) {
-            echo("Found Session#: ".$result['sessionId']."<br/>");
+            //echo("Found Session#: ".$result['sessionId']."<br/>");
             // When creating the Session object, pass dbGet: True to load its own data
             // but ensure the Cinema object created within it uses dbGet: False
             $session = new self(
@@ -167,7 +167,7 @@ CLASS Session EXTENDS Database {
                 seatCost : $result['seatCost'],
                 dbGet : True // Set dbGet to True to load session details from DB
             );
-            echo("Adding Session# to list: ".$session->getSessionId()."<br/>");
+            //echo("Adding Session# to list: ".$session->getSessionId()."<br/>");
             $sessions[] = $session;
         }
         RETURN $sessions;

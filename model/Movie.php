@@ -127,7 +127,7 @@ CLASS Movie EXTENDS Database {
         IF ($this->getMovieId()) {
             IF ($dbGet){
                 $sql = "SELECT ".implode(', ',self::$fieldNames)." FROM ".self::$tableName." WHERE ".self::$pk." = ?";
-                echo($sql." ".$this->getMovieId());
+                //echo($sql." ".$this->getMovieId());
 
                 $results = $this->query($sql,[$this->getMovieId()]);
 
@@ -149,7 +149,7 @@ CLASS Movie EXTENDS Database {
 
         IF ($session) {
             $sql = "SELECT ".implode(', ',self::fieldList)." FROM ".self::$tableName." AS m, sessions AS s WHERE s.movieId = m.movieId AND s.sessionId = ?";
-            echo("load Movies: ".$sql."<br/>");
+            //echo("load Movies: ".$sql."<br/>");
             $db = Database();
             $results = $db->query($sql, [$session->getSessionId()]);
             FOREACH($results AS $result) {

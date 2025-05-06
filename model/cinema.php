@@ -57,7 +57,7 @@ CLASS Cinema EXTENDS Database {
     public function getSessions() : array {
         // If sessions haven't been loaded yet, load them
         if (empty($this->sessions) && $this->getCinemaId() !== null) {
-            echo("Loading sessions on demand for Cinema: ".$this->getCinemaId()."<br/>");
+            //echo("Loading sessions on demand for Cinema: ".$this->getCinemaId()."<br/>");
             $this->sessions = Session::loadSessions(cinema: $this);
         }
         return $this->sessions;
@@ -114,7 +114,7 @@ CLASS Cinema EXTENDS Database {
                 // For now, let's assume CinemaLocation doesn't load Cinemas in its constructor.
                 $this->setCinemaLocation(new CinemaLocation(locationId:$result['locationId']));
             }
-            echo("Get Cinema data from DB: ".$this->getCinemaId()."<br/>");
+            //echo("Get Cinema data from DB: ".$this->getCinemaId()."<br/>");
         }
     }
 
@@ -125,7 +125,7 @@ CLASS Cinema EXTENDS Database {
         IF ($cinemaLocation) {
             $db = new Database();
             $sql = "SELECT cinemaId, cinemaName FROM ".self::$tableName." WHERE locationId = ?";
-            echo("Loading Cinemas for location: ".$cinemaLocation->getLocationId()."<br/>");
+            //echo("Loading Cinemas for location: ".$cinemaLocation->getLocationId()."<br/>");
 
             $results = $db->query($sql,[$cinemaLocation->getLocationId()]);
             FOREACH ($results AS $result) {
@@ -136,7 +136,7 @@ CLASS Cinema EXTENDS Database {
                     cinemaLocation: $cinemaLocation,
                     dbGet: True // Set dbGet to True to load cinema details from DB
                 );
-                echo("Loaded Cinema: ".$cinema->getCinemaId())."<br/>";
+                //echo("Loaded Cinema: ".$cinema->getCinemaId())."<br/>";
                 $cinemas[] = $cinema;  // Append cinema to list
             }
         }
