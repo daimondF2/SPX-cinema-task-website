@@ -16,6 +16,7 @@ CLASS Movie EXTENDS Database {
     private static $entityName = "Movies";
     private static array $fieldNames = array('movieId', 'movieName', 'posterFile', 'movieDescription', 'trailerName');
     private static string $pk = "movieId";
+    public static array $fieldList = ['movieId', 'movieName', 'posterFile', 'movieDescription', 'trailerName'];
     /**
      * Constructor.
      *
@@ -166,6 +167,35 @@ CLASS Movie EXTENDS Database {
         }
         RETURN $movies;
 
+    }
+    /**
+     * Static Method to load move with an Id
+     */
+    public static function getMovieById(int $movieId): ?self {
+        if ($movieId) {
+            $sql = "SELECT ".implode(', ',self::$fieldList)." FROM ".self::$tableName." WHERE movieId = ?";
+            $db = new Database();
+            $results = $db->query($sql, [$movieId]);
+            // if (count($results) == 0) {
+            //     return null;
+            // }
+            if ($results && count($results) == 1) {
+                $result = $results[0];
+                return new self(
+
+                movieId: $result['movieId'],
+                movieName: $result['movieName'],
+                posterFile: $result['posterFile'],
+                movieDescription: $result['movieDescription'],
+                trailerName: $result['trailerName'],
+                dbGet: false
+            );
+        }
+        if (!$results) {
+            echo "Query failed: " . $db->getError();
+        }
+    
+    }
     }
 
     // Business Functions

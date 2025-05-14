@@ -9,7 +9,7 @@ require_once("model\Movie.php");
 // GET Mode
 //echo("CinemaLocation::loadCinemaLocations()<br/>");
 $locs = CinemaLocation::loadCinemaLocations();
-
+//TODO fix css, maybe add booking and add basket here perchance a filter, filter by location
 
 ?>
 <!DOCTYPE html>
@@ -35,9 +35,10 @@ $locs = CinemaLocation::loadCinemaLocations();
             <?php
                 $cinemas = $loc->getCinemas();
                 FOREACH($cinemas AS $cinema) {
-            ?>
+            ?><div class="cinema-list">
                     <h3><?php echo($cinema->getCinemaName()); ?></h3>
                     <movies>
+                </div>
                 <?php
                     $sessions = $cinema->getSessions();
                     FOREACH($sessions AS $session) {
@@ -46,17 +47,17 @@ $locs = CinemaLocation::loadCinemaLocations();
                         <!-- TOO CHANGE -->
                         <movie> 
                             <h4><?php echo($movie->getMovieName()); ?></h4>
-                            <div><img src='img/<?php echo($movie->getPosterFile()); ?>'></div>
-                            <div><?php echo($movie->getMovieDescription()); ?></div>
-
+                            <div><img src='<?php echo($movie->getPosterFile()); ?>'></div>
+                            <div class="movie-description"><?php echo($movie->getMovieDescription()); ?></div>
+                            <div><a href="movied.php?movieId=<?php echo $movie->getMovieId(); ?>">View movie details</a></div>
+                        <h6>Session Time: <?php echo($session->getTime()); ?></h6>
+                        <h6>Seat Cost $:<?php echo($session->getSeatCost()); ?></h6>
                         </movie>
-                        <h5>Session Time: <?php echo($session->getTime()); ?></h5>
-                        <h5>Seat Cost $:<?php echo($session->getSeatCost()); ?></h5>
                     <?php
                     }
                 }
             }
-            ?>
+            ?></movies>
         </div>
         <locations>
         </maincontent>

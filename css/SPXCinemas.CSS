@@ -111,15 +111,13 @@ footer {
 /* ========== movie styling ===========*/
 movie {
     display: block; /* Makes <movie> behave like a div */
+    width:300px;
     border: 2px solid #ccc;
     background-color: #fff;
     padding: 15px;
-    margin: 20px auto;
-    width: fit-content;
-    max-width: 600px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     border-radius: 8px;
-  
+} 
   
   /* Optional: style elements inside */
   movie h4 {
@@ -129,15 +127,61 @@ movie {
   }
   
   movie img {
-    max-width: 100%;
+    width: 120px;       
     border-radius: 5px;
+    object-fit: cover;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+
   }
   
   movie div, movie iframe, movie h5 {
     margin-top: 10px;
   }
-}
 
 locations {
-    margin-top:0;
+    display: block;
+    width: 100%;
+    max-width: 1000px;
+    text-align: left;
+    padding-left: 20px; /* optional, for visual margin */
+    box-sizing: border-box;
+}
+movies {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* spacing between movie cards */
+    justify-content: flex-start; /* align to left */
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+.movie-description {
+    white-space: nowrap;          /* Prevent line breaks */
+    overflow: hidden;             /* Hide overflow */
+    text-overflow: ellipsis;      /* Show '...' when too long */
+    max-width: 100%;              /* Limit the box */
+    cursor: pointer;              /* Show pointer on hover */
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Show full text on hover */
+.movie-description:hover {
+    white-space: normal;
+    overflow: visible;
+    background-color: rgba(255,255,255,0.95);
+    padding: 5px;
+    border-radius: 5px;
+    z-index: 2;
+    position: absolute;
+}
+
+.cinema-list h3 {
+    display: inline-block;
+    margin-right: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 250px;
+    vertical-align: top;
 }
