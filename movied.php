@@ -17,7 +17,7 @@ $movieId = intval($_GET['movieId']);
 $movie = Movie::getMovieById($movieId);
 
 if (!$movie) {
-    die("movie not foudn.");
+    die("movie not found.");
 }
 ?>
 <!DOCTYPE html>

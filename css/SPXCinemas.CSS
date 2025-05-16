@@ -40,7 +40,8 @@ header {
 }
 
 /* ===============   Navigation Bar styling   ================*/
-nav {
+nav {  
+
     & ul {
         list-style-type: none;
         margin: 0;
@@ -49,10 +50,11 @@ nav {
         background-color: rgb(3,3,3);
         display: flex;
         align-items:         center;   /* vertical */
-        justify-content:     left;   /* horizontal align text */
+        /* justify-content:     left;   horizontal align text */
     }
+
     & li {
-        float: left;
+        /* float: left; */
         min-height: 4vh;
       }
 
@@ -68,11 +70,16 @@ nav {
             width:    1.5vw;
             height: 2.5vh;
         }
+ 
+  
     }
 
     /* Change the link color to #111 (black) on hover */
     & li a:hover {
         background-color: #111;
+    }
+       .right-align {
+        margin-left: auto;
     }
 }
 

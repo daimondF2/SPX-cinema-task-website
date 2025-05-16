@@ -22,7 +22,6 @@ Session Time
 Cost per seat 
 Exclusions:
 Session on Different Days are not within Scope of this Project
-We will not be implementing a seat allocation system in this Iteration
 No requirement for a Session Management system - data managed directly in database
 -----------------------------------------------------------------------------------------------------
 - Booking Process
@@ -97,14 +96,12 @@ Movies will be listed with the following information
 Location / Cinema Name
 Movie Name
 Movie Poster
-Link to Movie Details Screen 
 Movie Details Screen
 Movie information
 Location / Cinema Name
 Movie Name
 Movie Poster
 Link to Movie Details Screen 
-Embedded Youtube of Movie Trailer
 Session Information
 Session Times
 Session Cost

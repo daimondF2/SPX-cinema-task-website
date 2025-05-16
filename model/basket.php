@@ -28,4 +28,10 @@ Session details - i.e. Movie and Cinema
 <?php
 require_once("database.php");
 require_once("auditlog.php");
+
+CLASS basket EXTENDS Database{
+
+}
+?>
+
 ?>
