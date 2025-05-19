@@ -28,10 +28,25 @@ Session details - i.e. Movie and Cinema
 <?php
 require_once("database.php");
 require_once("auditlog.php");
+//basket turns into a list 
+
+
+
 
 CLASS basket EXTENDS Database{
+    private $basketId = null
+    private $seats = null
+    private $bookingDate = null
+
+    private static $tableName = "basket";
+
+
+    public function __construct (
+
+    ) {
+        parent::__construct(); // gets a database connection
+        // echo("Constructing Cinema: ".$cinemaName);
+    }
 
 }
-?>
-
 ?>
