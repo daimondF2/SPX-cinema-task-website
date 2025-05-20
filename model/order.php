@@ -72,5 +72,16 @@ class order EXTENDS Database{
         }
         return false;
     }
+
+    //add order
+
+
+    //getOrders
+
+    
+    //
+
+
+
 }
 ?>
