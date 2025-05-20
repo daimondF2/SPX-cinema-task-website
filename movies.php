@@ -10,6 +10,13 @@ require_once("model\Movie.php");
 //echo("CinemaLocation::loadCinemaLocations()<br/>");
 $locs = CinemaLocation::loadCinemaLocations();
 //TODO fix css, maybe add booking and add basket here perchance a filter, filter by location
+$selectedLocId = isset($_GET['locationId']) ? $_GET['locationId'] : null;
+
+if ($selectedLocId) {
+    $locs = array_filter($locs, function ($loc) use ($selectedLocId) {
+        return $loc->getLocationId() == $selectedLocId;
+    });
+}
 
 ?>
 <!DOCTYPE html>
@@ -27,6 +34,21 @@ $locs = CinemaLocation::loadCinemaLocations();
     ?>
     <maincontent>
         <h1>Movies</h1>
+        <form method="GET" action="" id="locationForm">
+            <label for="location">Filter by Location:</label>
+            <select name="locationId" id="location" onchange="document.getElementById('locationForm').submit();">
+                <option value="">-- All Locations --</option>
+                <?php
+                // Load all locations for dropdown
+                $allLocs = CinemaLocation::loadCinemaLocations();
+                foreach ($allLocs as $loc): ?>
+                    <option value="<?php echo $loc->getLocationId(); ?>"
+                        <?php echo ($selectedLocId == $loc->getLocationId()) ? 'selected' : ''; ?>>
+                        <?php echo $loc->getLocationName(); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </form>
         <locations>
         <div >
             <?php FOREACH($locs AS $loc) {
