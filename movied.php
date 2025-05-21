@@ -48,6 +48,14 @@ if (!$movie) {
                 <!-- <h4>location:<?php// echo $cinema->getCinemaName(); ?></h4> -->
                 <h4>Session Time: <?php echo $session->getTime(); ?></h4>
                 <h4>Seat Cost: $<?php echo $session->getSeatCost(); ?></h4>
+                <form method="POST" action="basket.php">
+                <input type="hidden" name="sessionId" value="<?php echo $session->getSessionId(); ?>">
+                <label for="bookingDate">Select Date:</label>
+                <input type="date" name="bookingDate" required>
+                <label for="seats">Number of Seats:</label>
+                <input type="number" name="seats" min="1" required>
+                <button type="submit">Book Now</button>
+                </form>
         </div>
         <?php endforeach; ?>
         </maincontent>

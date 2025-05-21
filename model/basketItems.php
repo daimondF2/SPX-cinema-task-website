@@ -1,8 +1,9 @@
 <?php
 require("Session.php");
+require("database.php");
 
-
-class basketItems {
+class basketItems Extends Database {
+    private ?int $basketItemId = null;
     private ?int $sessionId = null;
     private ?int $seats = null;
     private ?int $seatsCost = null;
@@ -14,10 +15,12 @@ class basketItems {
         ?int $seatsCost = null,
         ?string $bookingDate = null
     ) {
+        parent::__construct();
         $this->setSessionId($sessionId);
         $this->setSeats($seats);
         $this->setSeatsCost($seatsCost);
         $this->setBookingDate($bookingDate);
+        
     }
 
     // Setter and Getter methods
@@ -47,6 +50,8 @@ class basketItems {
         $this->bookingDate = $bookingDate;
     }
     // Method to get session details
+    
+
 }
 
 

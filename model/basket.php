@@ -52,8 +52,20 @@ class basket {
         return $this->basketItems;
     }
 
+    //add item to basket
+    public function addItem(basketItems $item): void {
+        //check if item already exists in basket
+        foreach ($this->basketItems as $basketItem) {
+            if ($basketItem->getSessionId() === $item->getSessionId()) {
+                //if item already exists update the quantity
+                $basketItem->setSeats($basketItem->getSeats() + $item->getSeats());
+                return;
+            }
+        }
+        //if item does not exist add it to the basket
+        $this->basketItems[] = $item;
+    }
 
-    
 
     //audit log
     private function auditLog(string $entity, string $action, string $entry, ?int $memberId=null,): void {
