@@ -4,10 +4,10 @@ require_once("database.php");
 date_default_timezone_set("Australia/Sydney");
 class order EXTENDS Database{
 
-    private $orderId = null
-    private $booked = null  //establishing my variables 
-    private $orderTime = null
-    private $memberId = null
+    private $orderId = null;
+    private $booked = null ; //establishing my variables 
+    private $orderTime = null;
+    private $memberId = null;
 
     private static $tableName = "order";
     private static array $fieldNames = ['orderId', 'booked', 'orderTime', 'memberId'];

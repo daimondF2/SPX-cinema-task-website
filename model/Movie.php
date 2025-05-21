@@ -69,7 +69,7 @@ CLASS Movie EXTENDS Database {
     public function getSessions(): ?array {
         // If sessions haven't been loaded yet, load them
         if (empty($this->sessions) && $this->getMovieId() !== null) {
-            echo("Loading sessions on demand for Cinema: ".$this->getMovieId()."<br/>");
+            //echo("Loading sessions on demand for Cinema: ".$this->getMovieId()."<br/>");
             $this->sessions = Session::loadSessions(movie: $this);
         }
         return $this->sessions;

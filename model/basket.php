@@ -1,8 +1,6 @@
-Shopping Cart Screen
+<!-- Shopping Cart Screen
 The Member may choose to go to the  Shopping Cart to review their booking requests
 Seats booked must be a minimum of 1 - otherwise prompt Member to delete Booking Request
-
-
 They may wish to Change the Booking Request
 Amend  the quantity of seats on the booking request
 Seats booked must be a minimum of 1 - otherwise prompt Member to delete Booking Request
@@ -23,30 +21,66 @@ the Order Status - defaults to "Booked"
 Each Booking Request is added as an Order Item and linked to that Order including
 Date of Booking
 Number of Seats
-Session details - i.e. Movie and Cinema
+Session details - i.e. Movie and Cinema -->
 
 <?php
-require_once("database.php");
 require_once("auditlog.php");
+require_once("basketItems.php");
+require_once("member.php");
 //basket turns into a list 
 
 
+class basket {
+    private $memberId = null;
+    private $basketItems = [];
 
-
-CLASS basket EXTENDS Database{
-    private $basketId = null
-    private $seats = null
-    private $bookingDate = null
-
-    private static $tableName = "basket";
-
-
-    public function __construct (
-
-    ) {
-        parent::__construct(); // gets a database connection
-        // echo("Constructing Cinema: ".$cinemaName);
+    public function __construct() {
+        $this->memberId = $memberId;
     }
 
-}
-?>
+    //Getters and setters
+    public function setMemberId(?int $memberId = null): void {
+        $this->memberId = $memberId;
+    }
+    public function setBasketItems(array $basketItems): void {
+        $this->basketItems = $basketItems;
+    }
+    public function getMemberId(): ?int {
+        return $this->memberId;
+    }
+    public function getBasketItems(): array {
+        return $this->basketItems;
+    }
+
+
+    
+
+    //audit log
+    private function auditLog(string $entity, string $action, string $entry, ?int $memberId=null,): void {
+        $auditLog = new AuditLog();
+        $memberId = $memberId ?? $this->getMemberId(); //if memberId is null use the memberId from the basket
+        $auditLog->addLog($memberId, $entity, $action, $entry);
+    }
+
+
+    //create new basket based on member get user object out of session mem create new basket instance for user, get the basket items basket
+    //two func add product to basket
+    //other is checkout - order connection - 
+    //checkk if session exist in basket and then add to basket
+    //check already in basket
+    // if or and different dates
+    // check for same date
+    // passin date and stuff into order
+    //check out gets list checks there are items 
+    //then add to order
+    /**
+     * delete item from basket add new order to order items add orderid then order itmes
+     * if items not greater than zero return no items to process
+     * if processed checkout completer
+     * new basket add new order increment order number on save then save to order get order id to add to order items 
+     * adding to orderitems for each basket item add to orderItem
+     */
+
+
+    }
+    ?>

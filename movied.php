@@ -39,6 +39,17 @@ if (!$movie) {
         <div><img src="<?php echo($movie->getPosterFile()); ?>"></div>
         <div><?php echo($movie->getMovieDescription()); ?></div>
         <div><iframe width="560" height="315" src="https://www.youtube.com/embed/<?php echo($movie->getTrailerName());?>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
+        <h3>Sessions</h3>
+        <?php $sessions = $movie->getSessions();
+        foreach ($sessions as $session): 
+            //$cinema = $session->getCinema();
+            ?>
+            <div>
+                <!-- <h4>location:<?php// echo $cinema->getCinemaName(); ?></h4> -->
+                <h4>Session Time: <?php echo $session->getTime(); ?></h4>
+                <h4>Seat Cost: $<?php echo $session->getSeatCost(); ?></h4>
+        </div>
+        <?php endforeach; ?>
         </maincontent>
     <?php
         require('footer.php');

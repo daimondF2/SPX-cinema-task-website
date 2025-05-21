@@ -4,11 +4,10 @@ require_once("database.php");
 date_default_timezone_set("Australia/Sydney");
 class order EXTENDS Database{
 
-    private $orderItemId = null
-    private $sessionId = null  //establishing my variables 
-    private $seats = null
-    private $memberId = null
-    private $orderId
+    private $orderItemId = null;
+    private $sessionId = null;  //establishing my variables 
+    private $seats = null;
+    private $orderId = null;
 
     private static $tableName = "orderitems";
     private static array $fieldNames = ['orderItemId', 'memberId', 'sessionId', 'seats', 'orderId'];
@@ -17,10 +16,10 @@ class order EXTENDS Database{
 
     public function __construct (
         ?int $orderItemId = null,
-        ?int $booked = null,        //establishing my variables 
+        ?int $sessionId = null,        //establishing my variables 
+        ?int $seats = null,
         ?int $memberId = null,
-        ?string $orderTime = null,
-        bool $dbGet = True
+        ?int $orderId = null
     ) {
         parent::__construct(); // gets a database connection
 
