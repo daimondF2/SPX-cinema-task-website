@@ -8,6 +8,7 @@ session_unset();
 session_start();
 
 require("model/member.php");
+require_once("model/basket.php");
 //require("utilities/sanitize.php");
 
 $message="Please login to this wonderful website";
@@ -33,6 +34,8 @@ IF ($method=="POST") {
             $_SESSION["member"] = serialize($member);
             $_SESSION["footer"] = "Current Member: ".$member->getUsername()." (".$member->getFirstName()." ".$member->getLastName().") - (c) SPX Cinemas 2025";
             //redirect to home page after login
+            $basket = new Basket($member->getMemberId());
+            $_SESSION["basket"] = serialize($basket);
             header("Location: index.php");
             // exit;
         CASE 1:

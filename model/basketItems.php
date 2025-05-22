@@ -1,6 +1,6 @@
 <?php
-require("Session.php");
-require("database.php");
+require_once("Session.php");
+require_once("database.php");
 
 class basketItems Extends Database {
     private ?int $basketItemId = null;
@@ -16,7 +16,6 @@ class basketItems Extends Database {
     public function __construct(
         ?int $sessionId = null,
         ?int $seats = null,
-        ?int $seatsCost = null,
         ?string $bookingDate = null
     ) {
         parent::__construct();
@@ -25,10 +24,9 @@ class basketItems Extends Database {
         if ($seatsCost === null && $sessionId !== null) {
             $seatsCost = $this->getSeatCostFromSession($sessionId);
             }
-        }
         $this->setSeatsCost($seatsCost);
         $this->setBookingDate($bookingDate);
-
+    }
     // Setter and Getter methods
     public function getSessionId(): ?int {
         return $this->sessionId;

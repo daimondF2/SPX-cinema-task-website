@@ -4,6 +4,7 @@ require_once("model\CinemaLocation.php");
 require_once("model\Cinema.php");
 require_once("model\Session.php");
 require_once("model\Movie.php");
+require_once("model\basket.php");
 //!TODO - add the sessions stuff for the movie and where it at but that is easy i think!!! maybe add booking and add basket here
 //$locs = 
 // add find movieId = in orginal thing bring it here to get movieId, 
@@ -19,7 +20,31 @@ $movie = Movie::getMovieById($movieId);
 if (!$movie) {
     die("movie not found.");
 }
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sessionId'], $_POST['bookingDate'], $_POST['seats'])) {
+    $sessionId = intval($_POST['sessionId']);
+    $bookingDate = $_POST['bookingDate'];
+    $seats = intval($_POST['seats']);
+
+   if (isset($_SESSION['basket'])) {
+    $basket = unserialize($_SESSION['basket']);
+} else {
+    $memberId = isset($_SESSION['member']) ? unserialize($_SESSION['member'])->getMemberId() : null;
+    $basket = new Basket($memberId);
+}
+// Let Basket handle creating the basketItem
+$basket->addItemToBasket($sessionId, $seats, $bookingDate);
+
+$_SESSION['basket'] = serialize($basket);
+
+    // Redirect to basket view
+    header("Location: movied.php?movieId=" . urlencode($movieId));
+    exit;
+}
+
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,13 +73,13 @@ if (!$movie) {
                 <!-- <h4>location:<?php// echo $cinema->getCinemaName(); ?></h4> -->
                 <h4>Session Time: <?php echo $session->getTime(); ?></h4>
                 <h4>Seat Cost: $<?php echo $session->getSeatCost(); ?></h4>
-                <form method="POST" action="basket.php">
-                <input type="hidden" name="sessionId" value="<?php echo $session->getSessionId(); ?>">
-                <label for="bookingDate">Select Date:</label>
-                <input type="date" name="bookingDate" required>
-                <label for="seats">Number of Seats:</label>
-                <input type="number" name="seats" min="1" required>
-                <button type="submit">Book Now</button>
+                <form method="POST" action="">
+                    <input type="hidden" name="sessionId" value="<?php echo $session->getSessionId(); ?>">
+                    <label for="bookingDate">Select Date:</label>
+                    <input type="date" name="bookingDate" required>
+                    <label for="seats">Number of Seats:</label>
+                    <input type="number" name="seats" min="1" required>
+                    <button type="submit">Book Now</button>
                 </form>
         </div>
         <?php endforeach; ?>

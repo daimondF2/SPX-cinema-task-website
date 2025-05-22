@@ -53,17 +53,19 @@ class basket {
     }
 
     //add item to basket
-    public function addItem(basketItems $item): void {
+    public function addItemToBasket(int $sessionId, int $seats, string $bookingDate): bool {
         //check if item already exists in basket
-        foreach ($this->basketItems as $basketItem) {
-            if ($basketItem->getSessionId() === $item->getSessionId()) {
-                //if item already exists update the quantity
-                $basketItem->setSeats($basketItem->getSeats() + $item->getSeats());
-                return;
+        foreach ($this->basketItems as $item) {
+            if ($item->getSessionId() == $sessionId && $item->getBookingDate() == $bookingDate) {
+                //update the number of seats
+                $item->setSeats($item->getSeats() + $seats);
+                return true;
             }
         }
-        //if item does not exist add it to the basket
-        $this->basketItems[] = $item;
+        //if not found create new item
+        $newItem = new basketItems($sessionId, $seats, $bookingDate);
+        array_push($this->basketItems, $newItem);
+        return true;
     }
 
 
