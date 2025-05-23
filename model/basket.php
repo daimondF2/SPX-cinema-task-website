@@ -63,7 +63,8 @@ class basket {
             }
         }
         //if not found create new item
-        $newItem = new basketItems($sessionId, $seats, $bookingDate);
+        $newItem = new basketItems($sessionId, $seats, null, $bookingDate);
+        $newItem->addBasketItem();
         array_push($this->basketItems, $newItem);
         return true;
     }

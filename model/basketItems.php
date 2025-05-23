@@ -6,26 +6,30 @@ class basketItems Extends Database {
     private ?int $basketItemId = null;
     private ?int $sessionId = null;
     private ?int $seats = null;
-    private ?int $seatsCost = null;
+    private ?float $seatCost = null;
     private ?string $bookingDate = null;
+    private ?float $totalCost = null;
 
-    private static array $fieldNames = ['basketItemId', 'sessionId', 'seats', 'seatsCost', 'bookingDate'];
+    private static array $fieldNames = ['basketItemId', 'sessionId', 'seats', 'seatCost', 'bookingDate'];
     private static string $tableName = "basketitem";
     private static string $pk = "basketItemId";
 
     public function __construct(
         ?int $sessionId = null,
         ?int $seats = null,
-        ?string $bookingDate = null
+        ?float $seatCost = null,
+        ?string $bookingDate = null,
+        ?float $totalCost = null
     ) {
         parent::__construct();
         $this->setSessionId($sessionId);
         $this->setSeats($seats);
-        if ($seatsCost === null && $sessionId !== null) {
-            $seatsCost = $this->getSeatCostFromSession($sessionId);
+        if ($seatCost === null && $sessionId !== null) {
+            $seatCost = $this->getSeatCostFromSession($sessionId);
             }
-        $this->setSeatsCost($seatsCost);
+        $this->setSeatCost($seatCost);
         $this->setBookingDate($bookingDate);
+        $this->setTotalCost($totalCost);
     }
     // Setter and Getter methods
     public function getSessionId(): ?int {
@@ -34,15 +38,15 @@ class basketItems Extends Database {
     public function getSeats(): ?int {
         return $this->seats;
     }
-    public function getSeatsCost(): ?int {
-        return $this->seatsCost;
+    public function getSeatCost(): ?float {
+        return $this->seatCost;
     }
     public function getBookingDate(): ?string {
         return $this->bookingDate;
     }
     public function getTotalCost(): ?float {
-        if ($this->seatsCost !== null && $this->seats !== null) {
-            return $this->seatsCost * $this->seats;
+        if ($this->seatCost !== null && $this->seats !== null) {
+            return $this->seatCost * $this->seats;
         }
         return null;
     }
@@ -60,11 +64,14 @@ class basketItems Extends Database {
     public function setSeats(?int $seats): void {
         $this->seats = $seats;
     }
-    public function setSeatsCost(?int $seatsCost): void {
-        $this->seatsCost = $seatsCost;
+    public function setSeatCost(?float $seatCost): void {
+        $this->seatCost = $seatCost;
     }
     public function setBookingDate(?string $bookingDate): void {
         $this->bookingDate = $bookingDate;
+    }
+    public function setTotalCost(?float $totalCost): void {
+        $this->totalCost = $totalCost;
     }
     // Method to get session details
     public function getSessionDetails(): ?Session {
@@ -75,10 +82,11 @@ class basketItems Extends Database {
             return $session;
         }
     }
+
     //add to database
     public function addBasketItem(): bool {
-        $sql = "INSERT INTO " . self::$tableName . " (sessionId, seats, seatCost, bookingDate, totalCost) VALUES (?, ?, ?, ?)";
-        $params = [$this->getSessionId(), $this->getSeats(), $this->getSeatsCost(), $this->getBookingDate()];
+        $sql = "INSERT INTO " . self::$tableName . " (sessionId, seats, seatCost, bookingDate, totalCost) VALUES (?, ?, ?, ?, ?)";
+        $params = [$this->getSessionId(), $this->getSeats(), $this->getSeatCost(), $this->getBookingDate(), $this->getTotalCost()];
         $result = $this->query($sql, $params);
         return $result;
     }
@@ -92,7 +100,7 @@ class basketItems Extends Database {
             $basketItem = new self(
                 sessionId: $row['sessionId'],
                 seats: $row['seats'],
-                seatsCost: $row['seatsCost'],
+                seatsCost: $row['seatCost'],
                 bookingDate: $row['bookingDate'],
                 totalCost: $row['totalCost']
             );
