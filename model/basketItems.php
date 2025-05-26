@@ -1,6 +1,7 @@
 <?php
 require_once("Session.php");
 require_once("database.php");
+require_once("auditlog.php");
 
 class basketItems Extends Database {
     private ?int $basketItemId = null;
@@ -9,6 +10,7 @@ class basketItems Extends Database {
     private ?float $seatCost = null;
     private ?string $bookingDate = null;
     private ?float $totalCost = null;
+    private ?int $memberId = null; 
 
     private static array $fieldNames = ['basketItemId', 'sessionId', 'seats', 'seatCost', 'bookingDate'];
     private static string $tableName = "basketitem";
@@ -19,7 +21,8 @@ class basketItems Extends Database {
         ?int $seats = null,
         ?float $seatCost = null,
         ?string $bookingDate = null,
-        ?float $totalCost = null
+        ?float $totalCost = null,
+        ?int $memberId = null 
     ) {
         parent::__construct();
         $this->setSessionId($sessionId);
@@ -30,6 +33,10 @@ class basketItems Extends Database {
         $this->setSeatCost($seatCost);
         $this->setBookingDate($bookingDate);
         $this->setTotalCost($totalCost);
+        $this->setMemberId($memberId);
+    }
+    public function __wakeup() {
+        parent::__construct(); // Reconnect to DB after unserialize
     }
     // Setter and Getter methods
     public function getSessionId(): ?int {
@@ -50,6 +57,9 @@ class basketItems Extends Database {
         }
         return null;
     }
+    public function getMemberId(): ?int {
+        return $this->memberId;
+    }
     private function getSeatCostFromSession(int $sessionId): ?int {
         $session = new Session($sessionId);
         if (method_exists($session, 'getSeatCost')) {
@@ -58,6 +68,9 @@ class basketItems Extends Database {
         return null;
     }
     //setter methods
+    public function setMemberId(?int $memberId): void {
+        $this->memberId = $memberId;
+    }
     public function setSessionId(?int $sessionId): void {
         $this->sessionId = $sessionId;
     }
@@ -85,29 +98,60 @@ class basketItems Extends Database {
 
     //add to database
     public function addBasketItem(): bool {
-        $sql = "INSERT INTO " . self::$tableName . " (sessionId, seats, seatCost, bookingDate, totalCost) VALUES (?, ?, ?, ?, ?)";
-        $params = [$this->getSessionId(), $this->getSeats(), $this->getSeatCost(), $this->getBookingDate(), $this->getTotalCost()];
+        $sql = "INSERT INTO " . self::$tableName . " (sessionId, seats, seatCost, bookingDate, totalCost, memberId) VALUES (?, ?, ?, ?, ?, ?)";
+        $params = [$this->getSessionId(), $this->getSeats(), $this->getSeatCost(), $this->getBookingDate(), $this->getTotalCost(), $this->getMemberId()];
+        $result = $this->query($sql, $params);
+        return $result;
+    }
+
+    //update Basket item
+    public function updateBasketItem(): bool {
+            // Validate bookingDate format (YYYY-MM-DD)
+        if (!$this->getBookingDate() || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $this->getBookingDate())) {
+            throw new Exception("Invalid bookingDate format");
+        }  
+        $sql = "UPDATE " . self::$tableName . " 
+                SET seats = ?, totalCost = ? 
+                WHERE sessionId = ? AND bookingDate = ? AND memberId = ?";
+        $params = [
+            $this->getSeats(),
+            $this->getTotalCost(),
+            $this->getSessionId(),
+            $this->getBookingDate(),
+            $this->getMemberId()
+        ];
+        $result = $this->query($sql, $params);
+        return $result;
+    }
+
+    public function deleteBasketItem(): bool {
+        $sql = "DELETE FROM " . self::$tableName . " WHERE sessionId = ? AND bookingDate = ? AND memberId = ?";
+        $params = [$this->getSessionId(), $this->getBookingDate(), $this->getMemberId()];
         $result = $this->query($sql, $params);
         return $result;
     }
     
     // Method to get all basket items
     public function getBasketItems(): array {
-        $sql = "SELECT * FROM " . self::$tableName;
-        $results = $this->query($sql);
+        $sql = "SELECT * FROM " . self::$tableName . " WHERE memberId = ?";;
+        $results = $this->query($sql, [$memberId]);
         $basketItems = [];
         foreach ($results as $row) {
             $basketItem = new self(
                 sessionId: $row['sessionId'],
                 seats: $row['seats'],
-                seatsCost: $row['seatCost'],
+                seatCost: $row['seatCost'],
                 bookingDate: $row['bookingDate'],
-                totalCost: $row['totalCost']
+                totalCost: $row['totalCost'],
+                memberId: $row['memberId']
             );
             $basketItems[] = $basketItem;
         }
         return $basketItems;
     }
+    //new method to from ading basket Items 
+
+
 }
 
 

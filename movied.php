@@ -21,21 +21,26 @@ if (!$movie) {
     die("movie not found.");
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sessionId'], $_POST['bookingDate'], $_POST['seats'])) {
-    $sessionId = intval($_POST['sessionId']);
-    $bookingDate = $_POST['bookingDate'];
-    $seats = intval($_POST['seats']);
-
-   if (isset($_SESSION['basket'])) {
+if (isset($_SESSION['basket'])) {
     $basket = unserialize($_SESSION['basket']);
+    // Reconnect DB for each basketItems object
+    foreach ($basket->getBasketItems() as $item) {
+        if (method_exists($item, '__wakeup')) {
+            $item->__wakeup();
+        }
+    }
 } else {
     $memberId = isset($_SESSION['member']) ? unserialize($_SESSION['member'])->getMemberId() : null;
     $basket = new Basket($memberId);
 }
 // Let Basket handle creating the basketItem
-$basket->addItemToBasket($sessionId, $seats, $bookingDate);
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $sessionId = intval($_POST['sessionId']);
+    $seats = intval($_POST['seats']);
+    $bookingDate = $_POST['bookingDate'];
 
-$_SESSION['basket'] = serialize($basket);
+    $basket->addItemToBasket($sessionId, $seats, $bookingDate);
+    $_SESSION['basket'] = serialize($basket);
 
     // Redirect to basket view
     header("Location: movied.php?movieId=" . urlencode($movieId));
@@ -81,6 +86,7 @@ $_SESSION['basket'] = serialize($basket);
                     <input type="number" name="seats" min="1" required>
                     <button type="submit">Book Now</button>
                 </form>
+                <div style="margin-bottom: 2rem;"></div>
         </div>
         <?php endforeach; ?>
         </maincontent>

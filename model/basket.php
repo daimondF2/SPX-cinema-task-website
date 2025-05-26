@@ -34,13 +34,20 @@ class basket {
     private $memberId = null;
     private $basketItems = [];
 
-    public function __construct() {
-        $this->memberId = $memberId;
+    public function __construct(
+        ?int $memberId = null) {
+        $this->setMemberId($memberId);
     }
 
     //Getters and setters
     public function setMemberId(?int $memberId = null): void {
         $this->memberId = $memberId;
+        // Load basket items for this member
+        $this->basketItems = [];
+        // if ($memberId !== null) {
+        //     $basketItemsObj = new basketItems();
+        //     $this->basketItems = $basketItemsObj->getBasketItemsByMemberId($memberId);
+        // }
     }
     public function setBasketItems(array $basketItems): void {
         $this->basketItems = $basketItems;
@@ -59,11 +66,21 @@ class basket {
             if ($item->getSessionId() == $sessionId && $item->getBookingDate() == $bookingDate) {
                 //update the number of seats
                 $item->setSeats($item->getSeats() + $seats);
+                $item->setTotalCost($item->getTotalCost() + ($item->getSeatCost() * $seats));
+                $updateItem = new basketItems(
+                    $item->getSessionId(),
+                    $item->getSeats(),
+                    $item->getSeatCost(),
+                    $item->getBookingDate(),
+                    $item->getTotalCost(),
+                    $this->memberId
+                );
+                $updateItem->updateBasketItem();
                 return true;
             }
         }
         //if not found create new item
-        $newItem = new basketItems($sessionId, $seats, null, $bookingDate);
+        $newItem = new basketItems($sessionId, $seats, null, $bookingDate, null, $this->memberId);
         $newItem->addBasketItem();
         array_push($this->basketItems, $newItem);
         return true;
