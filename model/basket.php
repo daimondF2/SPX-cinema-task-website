@@ -1,27 +1,3 @@
-<!-- Shopping Cart Screen
-The Member may choose to go to the  Shopping Cart to review their booking requests
-Seats booked must be a minimum of 1 - otherwise prompt Member to delete Booking Request
-They may wish to Change the Booking Request
-Amend  the quantity of seats on the booking request
-Seats booked must be a minimum of 1 - otherwise prompt Member to delete Booking Request
-
-Changes to number of seats will need to update the Session will the number of booked seats and the Total Cost of the Booking Request (derived/calculated as Session Cost x Num Seats)
-They cannot change the Session - Movie / Cinema - to do this they must delete a booking request and re-request
-Audit Log entry made
-They may choose to Delete a Booking Request
-The booking request may be deleted.
-Audit Log entry made.
-Checkout requested
-An Order is created for the Member
-Order will simply contain
-the date of the order
-the Order Status - defaults to "Booked"
-"Awaiting Payment" status and Payment Processing is out of scope for this Interation
-"Cancelled" status for an already Booked Order is out of scope for this Iteration.
-Each Booking Request is added as an Order Item and linked to that Order including
-Date of Booking
-Number of Seats
-Session details - i.e. Movie and Cinema -->
 
 <?php
 require_once("auditlog.php");
@@ -76,6 +52,8 @@ class basket {
                     $this->memberId
                 );
                 $updateItem->updateBasketItem();
+                $entry = "Update BasketItem Successful: memberId:".$this->memberId.", ".$seats." added to sessionId:".$sessionId." for booking date: ".$bookingDate;
+                $this->auditLog('basketItem', 'update', $entry, $this->memberId);
                 return true;
             }
         }
@@ -83,6 +61,8 @@ class basket {
         $newItem = new basketItems($sessionId, $seats, null, $bookingDate, null, $this->memberId);
         $newItem->addBasketItem();
         array_push($this->basketItems, $newItem);
+        $entry = "Add BasketItem Successful: memberId:".$this->memberId.", ".$seats." added to sessionId:".$sessionId." for booking date: ".$bookingDate;
+        $this->auditLog('basketItem', 'addBasketItem', $entry, $this->memberId);
         return true;
     }
 
@@ -93,6 +73,11 @@ class basket {
         $memberId = $memberId ?? $this->getMemberId(); //if memberId is null use the memberId from the basket
         $auditLog->addLog($memberId, $entity, $action, $entry);
     }
+    //remove item or seats from basket
+
+    //delete basketItems when user logs out
+
+    //
 
 
     //create new basket based on member get user object out of session mem create new basket instance for user, get the basket items basket

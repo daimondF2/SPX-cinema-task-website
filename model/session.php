@@ -170,7 +170,7 @@ CLASS Session EXTENDS Database {
             //echo("Adding Session# to list: ".$session->getSessionId()."<br/>");
             $sessions[] = $session;
         }
-        RETURN $sessions;
+        return $sessions;
     }
 
     // Business Functions

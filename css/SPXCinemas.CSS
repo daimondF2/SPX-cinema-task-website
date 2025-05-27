@@ -192,3 +192,87 @@ movies {
     max-width: 250px;
     vertical-align: top;
 }
+
+
+/* Order History Section */
+/* Center the main Order History title */
+.order-history-section > h1 {
+    text-align: center;
+    color: #a26e2b !important;
+    margin-bottom: 24px;
+    font-size: 2.2em !important;
+    font-family: 'Acme', Arial, sans-serif !important;
+}
+
+.order-header h3 {
+    color: #6a4a1b !important;
+    font-size: 1.25em !important;
+    font-weight: bold;
+    margin: 0;
+    font-family: 'Acme', Arial, sans-serif !important;
+}
+
+.order-block {
+    margin: 24px 0;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+    background: #f9f6ee;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+}
+
+.order-header {
+    cursor: pointer;
+    background: #e6d3b3;
+    padding: 18px 28px;
+    border-bottom: 1px solid #e0d7c6;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+}
+
+.order-header:hover {
+    background: #f1e3c6;
+}
+
+.order-details {
+    padding: 18px 28px;
+    background: #fffbe7;
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.order-history-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 0;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.order-history-table th, .order-history-table td {
+    border: 1px solid #e0d7c6;
+    padding: 12px 10px;
+    text-align: center;
+    color: #333 !important;
+    font-family: Arial, sans-serif !important;
+}
+
+.order-history-table th {
+    background: #e6d3b3;
+    color: #6a4a1b !important;
+    font-weight: bold;
+}
+
+.order-history-table tr:nth-child(even) {
+    background: #f5f0e6;
+}
+
+.order-history-table tr:hover {
+    background: #f1e3c6;
+}

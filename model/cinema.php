@@ -101,7 +101,7 @@ CLASS Cinema EXTENDS Database {
     }
 
 
-    private function getCinema() {
+    public function getCinema() {
         IF ($this->getCinemaId()) {
             $sql = "SELECT cinemaId, cinemaName, locationId FROM ".self::$tableName." WHERE cinemaId = ?";
             $results = $this->query($sql,[$this->getCinemaId()]);

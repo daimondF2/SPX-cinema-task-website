@@ -1,7 +1,10 @@
 <?php
 
 require_once("database.php");
+require_once("auditlog.php");
 date_default_timezone_set("Australia/Sydney");
+require_once("orderItems.php");
+
 class order EXTENDS Database{
 
     private $orderId = null;
@@ -54,6 +57,9 @@ class order EXTENDS Database{
         $this->booked = $booked;
     }
     public function setOrderTime(?string $orderTime=null): void {
+        if ($orderTime === null) {
+            $orderTime = date("Y-m-d") . " " . date("H:i:s"); //GET TIME DATE
+        }
         $this->orderTime = $orderTime;
     }
     public function setMemberId(?int $memberId=null): void {
@@ -73,10 +79,46 @@ class order EXTENDS Database{
         return false;
     }
 
-    //add order
-
-
+    //add orderitems
+    public function addOrder() {
+        if (!$this->exists()) {
+            $sql = "INSERT INTO " . self::$tableName . " (booked, orderTime, memberId) VALUES (?, ?, ?)";
+            $params = [$this->getBooked(), $this->getOrderTime(), $this->getMemberId()];
+            if ($this->run($sql, $params)) {
+                $this->setOrderId($this->getConn()->lastInsertId());
+                return true;
+            } else {
+                return false; 
+            }
+        }
+        return false;
+    }
     //getOrders
+    public function getOrder(bool $dbGet = true) {
+        if ($this->getOrderId()) {
+            if ($dbGet) {
+                $sql = "SELECT " . implode(', ', self::$fieldNames) . " FROM " . self::$tableName . " WHERE " . self::$pk . " = ? ORDER BY orderTime DESC";
+                $results = $this->query($sql, [$this->getOrderId()]);
+
+                foreach ($results as $result) {
+                    $this->setOrderId($result['orderId']);
+                    $this->setBooked($result['booked']);
+                    $this->setOrderTime($result['orderTime']);
+                    $this->setMemberId($result['memberId']);
+                }
+            }
+        }
+    }
+    public static function getOrdersByMemberId(int $memberId): array {
+    $orderObj = new self();
+    $sql = "SELECT * FROM `order` WHERE memberId = ? ORDER BY orderTime DESC";
+    $orders = $orderObj->query($sql, [$memberId]);
+    foreach ($orders as &$order) {
+            $orderItemsObj = new orderItems();
+            $order['items'] = $orderItemsObj->getOrderItems($order['orderId']);
+        }
+    return $orders;
+    }
 
     
     //

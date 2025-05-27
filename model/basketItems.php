@@ -104,7 +104,7 @@ class basketItems Extends Database {
         return $result;
     }
 
-    //update Basket item
+    //update Basket item -- remove seats
     public function updateBasketItem(): bool {
             // Validate bookingDate format (YYYY-MM-DD)
         if (!$this->getBookingDate() || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $this->getBookingDate())) {
