@@ -1,7 +1,7 @@
 <?php
 require(__DIR__.'\utilities\sessionCheck.php');
 require("model\basket.php");
-require_once("model/basketItems.php");
+require_once("model\Session.php");
 // Check if the user is logged in
 
 if (!isset($_SESSION["member"])) {
@@ -10,25 +10,38 @@ if (!isset($_SESSION["member"])) {
     exit;
 }
 // If the member is logged in, you can access their details
-$member = $_SESSION["member"];
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $action = $_POST['action'] ?? '';
-            $sessionId = $_POST['sessionId'] ?? null;
-            $bookingDate = $_POST['bookingDate'] ?? null;
-            $memberId = $_POST['memberId'] ?? null;
 
-            if ($action === 'update' && $sessionId && $bookingDate && $memberId) {
-                $newSeats = intval($_POST['seats']);
-                $basketItem = new basketItems($sessionId, $newSeats, null, $bookingDate, null, $memberId);
-                $basketItem->updateBasketItem();
-                echo "<p>Basket item updated.</p>";
-            }
-            if ($action === 'delete' && $sessionId && $bookingDate && $memberId) {
-                $basketItem = new basketItems($sessionId, null, null, $bookingDate, null, $memberId);
-                $basketItem->deleteBasketItem();
-                echo "<p>Basket item deleted.</p>";
+$memberOBJ = unserialize($_SESSION["member"]);
+$memberId = $memberOBJ->getMemberId();
+$basket = new Basket($memberId);
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['sessionId'], $_POST['bookingDate'])) {
+    $sessionId = intval($_POST['sessionId']);
+    $bookingDate = $_POST['bookingDate'];
+    $action = $_POST['action'];
+
+    // You may need to fetch seatCost for add
+    if ($action === 'add') {
+        // Find the item to get seatCost
+        foreach ($basket->getItems($memberId) as $item) {
+            if ($item->getSessionId() == $sessionId && $item->getBookingDate() == $bookingDate) {
+                $seatCost = $item->getSeatCost();
+                break;
             }
         }
+        // If not found, set a default or fetch from session
+        $seatCost = isset($seatCost) ? $seatCost : 0;
+        $basket->addItemToBasket($sessionId, 1, $bookingDate, $seatCost);
+    } elseif ($action === 'remove') {
+        $basket->removeBasketItemSeats($sessionId, 1, $bookingDate);
+    } elseif ($action === 'removeAll') {
+        $basket->removeItem($sessionId, $bookingDate);
+    }
+    header("Location: basketView.php");
+    exit;
+}
+
+$items = $basket->getItems($memberId);
+
 
 ?>
 <!DOCTYPE html>
@@ -45,35 +58,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <h1>basket</h1>
         <div >
             <?php
-            $memberId = $member['memberId'] ?? null;
-            $basket = new basket($memberId);
-            $basket->setMemberId($memberId);
-            $basketItems = $basket->getBasketItems();
-
-            if (empty($basketItems)) {
+            if (empty($items)) {
                 echo "<p>Your basket is empty.</p>";
             } else {
-                echo "<table border='1'>";
-                echo "<tr><th>Session ID</th><th>Seats</th><th>Seat Cost</th><th>Booking Date</th><th>Total Cost</th><th>Actions</th></tr>";
-                foreach ($basketItems as $item) {
-                    echo "<tr>";
-                    echo "<form method='post'>";
-                    echo "<td>" . htmlspecialchars($item->getSessionId()) . "<input type='hidden' name='sessionId' value='" . htmlspecialchars($item->getSessionId()) . "'></td>";
-                    echo "<td><input type='number' name='seats' value='" . htmlspecialchars($item->getSeats()) . "' min='1' required></td>";
-                    echo "<td>" . htmlspecialchars($item->getSeatCost()) . "</td>";
-                    echo "<td>" . htmlspecialchars($item->getBookingDate()) . "<input type='hidden' name='bookingDate' value='" . htmlspecialchars($item->getBookingDate()) . "'></td>";
-                    echo "<td>" . htmlspecialchars($item->getTotalCost()) . "</td>";
-                    echo "<td>
-                            <input type='hidden' name='memberId' value='" . htmlspecialchars($item->getMemberId()) . "'>
-                            <button type='submit' name='action' value='update'>Update</button>
-                            <button type='submit' name='action' value='delete' onclick=\"return confirm('Are you sure?');\">Delete</button>
-                        </td>";
-                    echo "</form>";
-                    echo "</tr>";
+                echo "<div class='basket-list'>";
+                foreach ($items as $item) {
+                    $session = new Session($item->getSessionId());
+                    $movieName = $session->getMovie() ? $session->getMovie()->getMovieName() : 'Unknown';
+                    $cinema = $session->getCinema();
+                        // Force-load cinema details if not loaded
+                        if ($cinema && !$cinema->getCinemaName()) {
+                            $cinema->getCinema(); 
+                        }
+                        $cinemaName = $cinema ? $cinema->getCinemaName() : 'Unknown';
+                    $sessionTime = $session->getTime() ?? 'Unknown';
+                    $sessionId = htmlspecialchars($item->getSessionId());
+                    $bookingDate = htmlspecialchars($item->getBookingDate());
+                    $seats = htmlspecialchars($item->getSeats());
+                    $seatCost = htmlspecialchars($item->getSeatCost());
+                    $total = $seats * $seatCost;
+                    echo "<div class='basket-card'>
+                        <div class='basket-details'>
+                            <div><strong>Movie:</strong> $movieName</div>
+                            <div><strong>Cinema:</strong> $cinemaName</div>
+                            <div><strong>Session Time:</strong> $sessionTime</div>
+                            <div><strong>Booking Date:</strong> $bookingDate</div>
+                            <div class='basket-actions'>
+                                <form method='post' action='basketView.php' style='display:inline;'>
+                                    <input type='hidden' name='sessionId' value='$sessionId'>
+                                    <input type='hidden' name='bookingDate' value='$bookingDate'>
+                                    <button type='submit' name='action' value='remove'>-</button>
+                                </form>
+                                <span class='basket-seats'>$seats</span>
+                                <form method='post' action='basketView.php' style='display:inline;'>
+                                    <input type='hidden' name='sessionId' value='$sessionId'>
+                                    <input type='hidden' name='bookingDate' value='$bookingDate'>
+                                    <button type='submit' name='action' value='add'>+</button>
+                                </form>
+                            </div>
+                            <div><strong>Seat Cost:</strong> $$seatCost</div>
+                            <div><strong>Total:</strong> $$total</div>
+                        </div>
+                        <form method='post' action='basketView.php' class='basket-removeall'>
+                            <input type='hidden' name='sessionId' value='$sessionId'>
+                            <input type='hidden' name='bookingDate' value='$bookingDate'>
+                            <button type='submit' name='action' value='removeAll'>Remove All</button>
+                        </form>
+                    </div>";
                 }
-                echo "</table>";
+                echo "</div>";
             }
-        ?>
+
+            ?>
         </div>
     </maincontent>
     <?php

@@ -124,15 +124,15 @@ class basketItems Extends Database {
         return $result;
     }
 
-    public function deleteBasketItem(): bool {
+    public function deleteBasketItem(int $sessionId, int $memberId, string $bookingDate): bool {
         $sql = "DELETE FROM " . self::$tableName . " WHERE sessionId = ? AND bookingDate = ? AND memberId = ?";
         $params = [$this->getSessionId(), $this->getBookingDate(), $this->getMemberId()];
-        $result = $this->query($sql, $params);
+        $result = $this->query($sql, $params);    
         return $result;
     }
     
     // Method to get all basket items
-    public function getBasketItems(): array {
+    public function getBasketItems(int $memberId): array {
         $sql = "SELECT * FROM " . self::$tableName . " WHERE memberId = ?";;
         $results = $this->query($sql, [$memberId]);
         $basketItems = [];
@@ -150,7 +150,6 @@ class basketItems Extends Database {
         return $basketItems;
     }
     //new method to from ading basket Items 
-
 
 }
 

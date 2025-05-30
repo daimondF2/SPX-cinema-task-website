@@ -20,10 +20,10 @@ class basket {
         $this->memberId = $memberId;
         // Load basket items for this member
         $this->basketItems = [];
-        // if ($memberId !== null) {
-        //     $basketItemsObj = new basketItems();
-        //     $this->basketItems = $basketItemsObj->getBasketItemsByMemberId($memberId);
-        // }
+        if ($memberId !== null) {
+            $basketItemsObj = new basketItems();
+            $this->basketItems = $basketItemsObj->getBasketItems($memberId);
+        }
     }
     public function setBasketItems(array $basketItems): void {
         $this->basketItems = $basketItems;
@@ -36,7 +36,7 @@ class basket {
     }
 
     //add item to basket
-    public function addItemToBasket(int $sessionId, int $seats, string $bookingDate): bool {
+    public function addItemToBasket(int $sessionId, int $seats, string $bookingDate, $seatCost): bool {
         //check if item already exists in basket
         foreach ($this->basketItems as $item) {
             if ($item->getSessionId() == $sessionId && $item->getBookingDate() == $bookingDate) {
@@ -54,13 +54,16 @@ class basket {
                 $updateItem->updateBasketItem();
                 $entry = "Update BasketItem Successful: memberId:".$this->memberId.", ".$seats." added to sessionId:".$sessionId." for booking date: ".$bookingDate;
                 $this->auditLog('basketItem', 'update', $entry, $this->memberId);
+                $this->basketItems = (new basketItems())->getBasketItems($this->memberId);
                 return true;
             }
         }
         //if not found create new item
-        $newItem = new basketItems($sessionId, $seats, null, $bookingDate, null, $this->memberId);
+        $totalCost = $seatCost * $seats;
+        $newItem = new basketItems($sessionId, $seats, $seatCost, $bookingDate, $totalCost, $this->memberId);
         $newItem->addBasketItem();
-        array_push($this->basketItems, $newItem);
+        $this->basketItems = (new basketItems())->getBasketItems($this->memberId);
+        //array_push($this->basketItems, $newItem);
         $entry = "Add BasketItem Successful: memberId:".$this->memberId.", ".$seats." added to sessionId:".$sessionId." for booking date: ".$bookingDate;
         $this->auditLog('basketItem', 'addBasketItem', $entry, $this->memberId);
         return true;
@@ -73,11 +76,69 @@ class basket {
         $memberId = $memberId ?? $this->getMemberId(); //if memberId is null use the memberId from the basket
         $auditLog->addLog($memberId, $entity, $action, $entry);
     }
-    //remove item or seats from basket
+    //remove move form basket
+    public function removeItem(int $sessionId, string $bookingDate): bool {
+        // wait
+        foreach ($this->basketItems as $item) {
+            if ($item->getSessionId() == $sessionId && $item->getBookingDate() == $bookingDate) {
+                $item->deleteBasketItem($sessionId, $this->memberId, $bookingDate);
+                $entry = "Delete BasketItem Successful: memberId:".$this->memberId.", ".$seats." removed from sessionId:".$sessionId." for booking date: ".$bookingDate;
+                $this->auditLog('basketItem', 'delete', $entry, $this->memberId);
+                $this->basketItems = (new basketItems())->getBasketItems($this->memberId);
+                return true; //item removed successfully
+                //check if there are enough seats to remove
+            }
+        }
+        return false;    
+    }  
+    
 
+    // remove seats from basket
+    public function removeBasketItemSeats(int $sessionId, int $seats, string $bookingDate): bool {
+        foreach ($this->basketItems as $item) {
+            if ($item->getSessionId() == $sessionId && $item->getBookingDate() == $bookingDate) {
+            //check if there are enough seats to remove
+                if ($item->getSeats() > $seats) {
+                    //update the number of seats
+                    $item->setSeats($item->getSeats() - $seats);
+                    $item->setTotalCost($item->getTotalCost() - ($item->getSeatCost() * $seats));
+                    $updateItem = new basketItems(
+                        $item->getSessionId(),
+                        $item->getSeats(),
+                        $item->getSeatCost(),
+                        $item->getBookingDate(),
+                        $item->getTotalCost(),
+                        $this->memberId
+                    );
+                    $updateItem->updateBasketItem();
+                    $entry = "Update BasketItem Successful: memberId:".$this->memberId.", ".$seats." removed to sessionId:".$sessionId." for booking date: ".$bookingDate;
+                    $this->auditLog('basketItem', 'update', $entry, $this->memberId);
+                    $this->basketItems = (new basketItems())->getBasketItems($this->memberId);
+                    return true;
+                    
+                } elseif ($item->getSeats() == $seats) {
+                    //if the number of seats is equal to the number of seats to remove, delete the item
+                    $item->deleteBasketItem($sessionId, $this->memberId, $bookingDate);
+                    $entry = "Delete BasketItem Successful: memberId:".$this->memberId.", ".$seats." removed from sessionId:".$sessionId." for booking date: ".$bookingDate;
+                    $this->auditLog('basketItem', 'delete', $entry, $this->memberId);
+                    $this->basketItems = (new basketItems())->getBasketItems($this->memberId);
+                    return true;
+                } else {
+                    //if there are not enough seats to remove return false
+                    return false;
+                }
+            }
+        }
+        return false; //item not found in basket
+    }
     //delete basketItems when user logs out
 
     //
+    public function getItems(int $memberId): array {
+        // This method should return all basket items for the given member ID
+        $basketItemsObj = new basketItems();
+        return $basketItemsObj->getBasketItems($memberId);
+    }
 
 
     //create new basket based on member get user object out of session mem create new basket instance for user, get the basket items basket
@@ -99,5 +160,5 @@ class basket {
      */
 
 
-    }
+}
     ?>

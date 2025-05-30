@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $seats = intval($_POST['seats']);
     $bookingDate = $_POST['bookingDate'];
 
-    $basket->addItemToBasket($sessionId, $seats, $bookingDate);
+    $basket->addItemToBasket($sessionId, $seats, $bookingDate, null);
     $_SESSION['basket'] = serialize($basket);
 
     // Redirect to basket view

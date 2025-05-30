@@ -279,3 +279,72 @@ movies {
 .order-history-table tr:hover {
     background: #f1e3c6;
 }
+
+/* Basket Card Layout */
+.basket-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    justify-content: flex-start;
+    margin-top: 24px;
+}
+
+.basket-card {
+    background: #fffbe7;
+    border: 2px solid #e6d3b3;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+    padding: 24px 32px 16px 32px;
+    min-width: 300px;
+    max-width: 350px;
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.basket-details > div {
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+.basket-actions {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.basket-actions form {
+    margin: 0 6px;
+}
+
+.basket-seats {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin: 0 10px;
+    min-width: 24px;
+    text-align: center;
+    display: inline-block;
+}
+
+.basket-removeall {
+    position: absolute;
+    bottom: 12px;
+    right: 16px;
+    top: auto;
+}
+
+.basket-removeall button {
+    background: #dc0b0b;
+    color: #fff;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.95em;
+    transition: background 0.2s;
+}
+
+.basket-removeall button:hover {
+    background: #a00;
+}

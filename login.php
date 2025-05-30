@@ -34,8 +34,6 @@ IF ($method=="POST") {
             $_SESSION["member"] = serialize($member);
             $_SESSION["footer"] = "Current Member: ".$member->getUsername()." (".$member->getFirstName()." ".$member->getLastName().") - (c) SPX Cinemas 2025";
             //redirect to home page after login
-            $basket = new Basket($member->getMemberId());
-            $_SESSION["basket"] = serialize($basket);
             header("Location: index.php");
             // exit;
         CASE 1:
