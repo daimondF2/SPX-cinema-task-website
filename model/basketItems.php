@@ -151,8 +151,13 @@ class basketItems Extends Database {
     }
     //new method to from ading basket Items 
 
+    public function deleteBasketItemsByMemberId(int $memberId): bool {
+        $sql = "DELETE FROM " . self::$tableName . " WHERE memberId = ?";
+        $params = [$memberId];
+        $result = $this->query($sql, $params);
+        return $result;
+    }
+
 }
-
-
 
 ?>

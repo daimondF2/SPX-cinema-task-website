@@ -2,9 +2,8 @@
 <?php
 require_once("auditlog.php");
 require_once("basketItems.php");
-require_once("member.php");
+require_once("order.php");
 //basket turns into a list 
-
 
 class basket {
     private $memberId = null;
@@ -63,7 +62,6 @@ class basket {
         $newItem = new basketItems($sessionId, $seats, $seatCost, $bookingDate, $totalCost, $this->memberId);
         $newItem->addBasketItem();
         $this->basketItems = (new basketItems())->getBasketItems($this->memberId);
-        //array_push($this->basketItems, $newItem);
         $entry = "Add BasketItem Successful: memberId:".$this->memberId.", ".$seats." added to sessionId:".$sessionId." for booking date: ".$bookingDate;
         $this->auditLog('basketItem', 'addBasketItem', $entry, $this->memberId);
         return true;
@@ -92,7 +90,6 @@ class basket {
         return false;    
     }  
     
-
     // remove seats from basket
     public function removeBasketItemSeats(int $sessionId, int $seats, string $bookingDate): bool {
         foreach ($this->basketItems as $item) {
@@ -115,14 +112,14 @@ class basket {
                     $this->auditLog('basketItem', 'update', $entry, $this->memberId);
                     $this->basketItems = (new basketItems())->getBasketItems($this->memberId);
                     return true;
-                    
-                } elseif ($item->getSeats() == $seats) {
-                    //if the number of seats is equal to the number of seats to remove, delete the item
-                    $item->deleteBasketItem($sessionId, $this->memberId, $bookingDate);
-                    $entry = "Delete BasketItem Successful: memberId:".$this->memberId.", ".$seats." removed from sessionId:".$sessionId." for booking date: ".$bookingDate;
-                    $this->auditLog('basketItem', 'delete', $entry, $this->memberId);
-                    $this->basketItems = (new basketItems())->getBasketItems($this->memberId);
-                    return true;
+                    //perchance this is not needed
+                // } elseif ($item->getSeats() == $seats) {
+                //     //if the number of seats is equal to the number of seats to remove, delete the item
+                //     $item->deleteBasketItem($sessionId, $this->memberId, $bookingDate);
+                //     $entry = "Delete BasketItem Successful: memberId:".$this->memberId.", ".$seats." removed from sessionId:".$sessionId." for booking date: ".$bookingDate;
+                //     $this->auditLog('basketItem', 'delete', $entry, $this->memberId);
+                //     $this->basketItems = (new basketItems())->getBasketItems($this->memberId);
+                //     return true;
                 } else {
                     //if there are not enough seats to remove return false
                     return false;
@@ -140,8 +137,41 @@ class basket {
         return $basketItemsObj->getBasketItems($memberId);
     }
 
+//checkout -methods, add to order, add to order items
+    public function checkout(): bool {
+        if (count($this->basketItems) === 0) {
+            // No items to process
+            return false;
+        }
+        // Create a new order
+        $order = new Order();
+        $order->setMemberId($this->getMemberId());
+        
+        $result = $order->addOrder();
+        error_log("Adding orderItems with orderId: " . $order->getOrderId());
+        if (!$result) {
+            // If order creation failed, return false
+            return false;
+        }
+        $order->addOrderItems($this); // Add basket items to the order
+        // Clear the basket after checkout
+        $this->clearBasket();
+        // Log the checkout action
+        $entry = "Checkout Successful: memberId:".$this->getMemberId().", orderId:".$order->getOrderId();
+        $this->auditLog('order', 'checkout', $entry, $this->getMemberId());
+        $this->basketItems = (new basketItems())->getBasketItems($this->memberId);
+        return true; // Checkout successful  
+    }
 
-    //create new basket based on member get user object out of session mem create new basket instance for user, get the basket items basket
+    public function clearBasket(): void {
+        // Clear the basket items for the member
+        $basketItemsObj = new basketItems();
+        $basketItemsObj->deleteBasketItemsByMemberId($this->getMemberId());
+        $this->basketItems = []; // Reset the basket items
+    }
+
+
+
     //two func add product to basket
     //other is checkout - order connection - 
     //checkk if session exist in basket and then add to basket

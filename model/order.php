@@ -8,11 +8,11 @@ require_once("orderItems.php");
 class order EXTENDS Database{
 
     private $orderId = null;
-    private $booked = null ; //establishing my variables 
+    private $booked = null; //establishing my variables 
     private $orderTime = null;
     private $memberId = null;
 
-    private static $tableName = "order";
+    private static $tableName = "orders";
     private static array $fieldNames = ['orderId', 'booked', 'orderTime', 'memberId'];
     private static string $pk = "orderId";
 
@@ -33,15 +33,14 @@ class order EXTENDS Database{
         if ($this->exists() && $dbGet) {
             $this->getOrder();
         }
-
     }
     //Getters and setters
     // GETTERS
     public function getOrderId(): ?int {
         return $this->orderId;
     }
-    public function getBooked(): ?bool {
-        return $this->booked;
+    public function getBooked(): ?int {
+        return ($this->booked) ? 1 :0;
     }
     public function getOrderTime(): ?string {
         return $this->orderTime;
@@ -54,7 +53,7 @@ class order EXTENDS Database{
         $this->orderId = $orderId;
     }
     public function setBooked(?bool $booked = true): void {
-        $this->booked = $booked;
+        $this->booked = ($booked) ? 1 : 0;
     }
     public function setOrderTime(?string $orderTime=null): void {
         if ($orderTime === null) {
@@ -81,18 +80,19 @@ class order EXTENDS Database{
 
     //add orderitems
     public function addOrder() {
-        if (!$this->exists()) {
-            $sql = "INSERT INTO " . self::$tableName . " (booked, orderTime, memberId) VALUES (?, ?, ?)";
-            $params = [$this->getBooked(), $this->getOrderTime(), $this->getMemberId()];
-            if ($this->run($sql, $params)) {
-                $this->setOrderId($this->getConn()->lastInsertId());
-                return true;
-            } else {
-                return false; 
-            }
+        $this->setOrderTime(); // Set the order time to current time if not set
+        $sql = "INSERT INTO " .self::$tableName. " (booked, memberId, orderTime) VALUES (?, ?, ?)";
+        $params = [$this->getBooked(), $this->getMemberId(), $this->getOrderTime()];
+        $result = $this->query($sql, $params);
+        $this->setOrderId(1);
+        if ($result) {
+            
+            return true;
+        } else {
+            return false; // Handle error if needed
         }
-        return false;
     }
+
     //getOrders
     public function getOrder(bool $dbGet = true) {
         if ($this->getOrderId()) {
@@ -109,9 +109,10 @@ class order EXTENDS Database{
             }
         }
     }
+
     public static function getOrdersByMemberId(int $memberId): array {
     $orderObj = new self();
-    $sql = "SELECT * FROM `order` WHERE memberId = ? ORDER BY orderTime DESC";
+    $sql = "SELECT * FROM `orders` WHERE memberId = ? ORDER BY orderTime DESC";
     $orders = $orderObj->query($sql, [$memberId]);
     foreach ($orders as &$order) {
             $orderItemsObj = new orderItems();
@@ -120,9 +121,25 @@ class order EXTENDS Database{
     return $orders;
     }
 
+    public function addOrderItems(basket $basket): bool {
+        foreach ($basket->getBasketItems() as $basketItem) {
+                $orderItem = new orderItems(
+                sessionId: $basketItem->getSessionId(),
+                seats: $basketItem->getSeats(),
+                seatCost: $basketItem->getSeatCost(),
+                orderId: $this->getOrderId(),
+                bookingDate: $basketItem->getBookingDate(),
+                totalCost: $basketItem->getTotalCost()
+            );
+            if (!$orderItem->addOrderItem()) {
+                return false; // If any item fails to add, return false
+            }
+        }
+        return true; // All items added successfully
+    }
     
     //
-
+    public function auditLog(){}
 
 
 }

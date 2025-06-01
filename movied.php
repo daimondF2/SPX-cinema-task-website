@@ -5,6 +5,7 @@ require_once("model\Cinema.php");
 require_once("model\Session.php");
 require_once("model\Movie.php");
 require_once("model\basket.php");
+require_once("model\Member.php");
 //!TODO - add the sessions stuff for the movie and where it at but that is easy i think!!! maybe add booking and add basket here
 //$locs = 
 // add find movieId = in orginal thing bring it here to get movieId, 

@@ -1,4 +1,5 @@
 <?php
+require_once("model/Member.php");
 require(__DIR__.'\utilities\sessionCheck.php');
 require("model\basket.php");
 require_once("model\Session.php");
@@ -9,7 +10,7 @@ if (!isset($_SESSION["member"])) {
     header("Location: login.php");
     exit;
 }
-// If the member is logged in, you can access their details
+// If member logged in you can access their details
 
 $memberOBJ = unserialize($_SESSION["member"]);
 $memberId = $memberOBJ->getMemberId();
@@ -19,16 +20,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['ses
     $bookingDate = $_POST['bookingDate'];
     $action = $_POST['action'];
 
-    // You may need to fetch seatCost for add
+    // may need to get seatCost for add
     if ($action === 'add') {
-        // Find the item to get seatCost
+        // Find item to get seatCost
         foreach ($basket->getItems($memberId) as $item) {
             if ($item->getSessionId() == $sessionId && $item->getBookingDate() == $bookingDate) {
                 $seatCost = $item->getSeatCost();
                 break;
             }
         }
-        // If not found, set a default or fetch from session
+        // If not found set a default or fetch from session
         $seatCost = isset($seatCost) ? $seatCost : 0;
         $basket->addItemToBasket($sessionId, 1, $bookingDate, $seatCost);
     } elseif ($action === 'remove') {
@@ -36,6 +37,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['ses
     } elseif ($action === 'removeAll') {
         $basket->removeItem($sessionId, $bookingDate);
     }
+    header("Location: basketView.php");
+    exit;
+}
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) {
+    // Handle checkout logic here
+    $basket->checkout();
     header("Location: basketView.php");
     exit;
 }
@@ -107,6 +114,11 @@ $items = $basket->getItems($memberId);
                     </div>";
                 }
                 echo "</div>";
+                // Add Checkout button if there are items
+                echo "<form method='post' action='basketView.php' style='text-align:center; margin-top:32px;'>
+                        <input type='hidden' name='checkout' value='1'>
+                        <button type='submit' class='checkout-btn'>Checkout</button>
+                      </form>";
             }
 
             ?>

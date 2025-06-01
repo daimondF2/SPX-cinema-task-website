@@ -99,11 +99,11 @@ class orderItems EXTENDS Database{
     }
     //add orderitems
     public function addOrderItem(): bool {
+        
         $sql = "INSERT INTO " . self::$tableName . " (sessionId, seats, seatCost, orderId, bookingDate, totalCost) VALUES (?, ?, ?, ?, ?, ?)";
         $params = [$this->getSessionId(), $this->getSeats(), $this->getSeatCost(), $this->getOrderId(), $this->getBookingDate(), $this->getTotalCost()];
         $result = $this->query($sql, $params);
         if ($result) {
-            $this->setOrderItemId($this->lastInsertId());
             return true;
         }
         return false;

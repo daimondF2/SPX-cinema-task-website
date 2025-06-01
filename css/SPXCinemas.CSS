@@ -348,3 +348,19 @@ movies {
 .basket-removeall button:hover {
     background: #a00;
 }
+
+/*checkout button*/
+.checkout-btn {
+    background: #2a7c2a;
+    color: #fff;
+    border: none;
+    padding: 12px 36px;
+    border-radius: 8px;
+    font-size: 1.2em;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background 0.2s;
+}
+.checkout-btn:hover {
+    background: #1e5c1e;
+}
