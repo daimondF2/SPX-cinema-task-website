@@ -90,7 +90,16 @@ class Database {
         $this->connect();
         return $this->conn;
     }
-
+    /**last insert id */
+    public function lastInsertId() {
+        return $this->getConn2()->insert_id;
+    }
+    public function getConn2() {
+        if (!$this->conn) {
+            $this->connect();
+        }
+        return $this->conn;
+    }
     /**
      * Run SQL query and return Result
      */

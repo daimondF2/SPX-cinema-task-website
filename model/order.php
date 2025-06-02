@@ -84,9 +84,9 @@ class order EXTENDS Database{
         $sql = "INSERT INTO " .self::$tableName. " (booked, memberId, orderTime) VALUES (?, ?, ?)";
         $params = [$this->getBooked(), $this->getMemberId(), $this->getOrderTime()];
         $result = $this->query($sql, $params);
-        $this->setOrderId(1);
+        
         if ($result) {
-            
+            $this->setOrderId($this->lastInsertId());// Set the orderId to the last inserted ID
             return true;
         } else {
             return false; // Handle error if needed
@@ -139,7 +139,10 @@ class order EXTENDS Database{
     }
     
     //
-    public function auditLog(){}
+    public function auditLog(string $entry, string $entity = 'order', string $action = '', ?int $memberId=null,): void {
+        $audit = new auditLog();
+        $audit->addLog($memberId, $entity, $action, $entry);
+    }
 
 
 }
