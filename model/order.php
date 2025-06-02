@@ -79,7 +79,7 @@ class order EXTENDS Database{
     }
 
     //add orderitems
-    public function addOrder() {
+    public function addOrder(): bool {
         $this->setOrderTime(); // Set the order time to current time if not set
         $sql = "INSERT INTO " .self::$tableName. " (booked, memberId, orderTime) VALUES (?, ?, ?)";
         $params = [$this->getBooked(), $this->getMemberId(), $this->getOrderTime()];

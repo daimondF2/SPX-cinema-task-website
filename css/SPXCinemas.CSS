@@ -82,7 +82,7 @@ nav {
         background-color: #111;
     }
        .right-align {
-        margin-left: auto;
+        margin-left: 67vw;
     }
 }
 
@@ -363,4 +363,10 @@ movies {
 }
 .checkout-btn:hover {
     background: #1e5c1e;
+}
+/** poster sizeing */
+.poster-img {
+    width: 200px;
+    height: 300px;
+    object-fit: cover;
 }

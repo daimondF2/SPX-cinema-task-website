@@ -53,7 +53,7 @@ function toggleOrderDetails(id) {
                     echo "<div class='order-block'>";
                     // Clickable order header
                     echo "<div class='order-header' onclick=\"toggleOrderDetails('$collapseId')\">";
-                    echo "<h3>Order #" . htmlspecialchars($order['orderId']) . " - " . htmlspecialchars($order['orderTime']) . " - Booked</h3>";
+                    echo "<h3>Order " . htmlspecialchars($order['orderTime']) . " - Booked</h3>";
                     echo "</div>";
                     // Collapsible details
                     echo "<div id='$collapseId' class='order-details' style='display:none;'>";

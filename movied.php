@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <maincontent>
         <h1>Movie</h1>
         <h4><?php echo($movie->getMovieName()); ?></h4>
-        <div><img src="<?php echo($movie->getPosterFile()); ?>"></div>
+        <div><img class="poster-img" src="<?php echo($movie->getPosterFile()); ?>"></div>
         <div><?php echo($movie->getMovieDescription()); ?></div>
         <div><iframe width="560" height="315" src="https://www.youtube.com/embed/<?php echo($movie->getTrailerName());?>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
         <h3>Sessions</h3>
