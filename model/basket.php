@@ -113,15 +113,10 @@ class basket {
                     $this->basketItems = (new basketItems())->getBasketItems($this->memberId);
                     return true;
                     //perchance this is not needed
-                // } elseif ($item->getSeats() == $seats) {
-                //     //if the number of seats is equal to the number of seats to remove, delete the item
-                //     $item->deleteBasketItem($sessionId, $this->memberId, $bookingDate);
-                //     $entry = "Delete BasketItem Successful: memberId:".$this->memberId.", ".$seats." removed from sessionId:".$sessionId." for booking date: ".$bookingDate;
-                //     $this->auditLog('basketItem', 'delete', $entry, $this->memberId);
-                //     $this->basketItems = (new basketItems())->getBasketItems($this->memberId);
-                //     return true;
                 } else {
                     //if there are not enough seats to remove return false
+                    $entry = "Remove BasketItem Failed: memberId:".$this->memberId.", not enough seats to remove from sessionId:".$sessionId." for booking date: ".$bookingDate;
+                    $this->auditLog('basketItem', 'remove', $entry, $this->memberId);
                     return false;
                 }
             }
@@ -146,11 +141,10 @@ class basket {
         // Create a new order
         $order = new Order();
         $order->setMemberId($this->getMemberId());
-        
         $result = $order->addOrder();
-        error_log("Adding orderItems with orderId: " . $order->getOrderId());
         if (!$result) {
             // If order creation failed, return false
+            $this->auditLog('order', 'checkout', 'Order creation failed for memberId: ' . $this->getMemberId(), $this->getMemberId());
             return false;
         }
         $order->addOrderItems($this); // Add basket items to the order
@@ -168,6 +162,7 @@ class basket {
         $basketItemsObj = new basketItems();
         $basketItemsObj->deleteBasketItemsByMemberId($this->getMemberId());
         $this->basketItems = []; // Reset the basket items
+        $this->auditLog('basket', 'clear', 'Basket cleared for memberId: ' . $this->getMemberId(), $this->getMemberId());
     }
 
 
