@@ -7,14 +7,11 @@ require_once("model\Movie.php");
 
 
 // GET Mode
-//echo("CinemaLocation::loadCinemaLocations()<br/>");
-$locs = CinemaLocation::loadCinemaLocations();
-//TODO fix css, maybe add booking and add basket here perchance a filter, filter by location
-$selectedLocId = isset($_GET['locationId']) ? $_GET['locationId'] : null;
-
+$locs = CinemaLocation::loadCinemaLocations(); // Load all cinema locations
+$selectedLocId = isset($_GET['locationId']) ? $_GET['locationId'] : null; # Check if locationId is set in the query string
 if ($selectedLocId) {
     $locs = array_filter($locs, function ($loc) use ($selectedLocId) {
-        return $loc->getLocationId() == $selectedLocId;
+        return $loc->getLocationId() == $selectedLocId; // Filter locations based on selected locationId
     });
 }
 
