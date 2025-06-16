@@ -65,32 +65,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         require('nav.php');
     ?>
     <maincontent>
-        <h1>Movie</h1>
-        <h4><?php echo($movie->getMovieName()); ?></h4>
-        <div><img class="poster-img" src="<?php echo($movie->getPosterFile()); ?>"></div>
-        <div><?php echo($movie->getMovieDescription()); ?></div>
-        <div><iframe width="560" height="315" src="https://www.youtube.com/embed/<?php echo($movie->getTrailerName());?>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
-        <h3>Sessions</h3>
-        <?php $sessions = $movie->getSessions();
-        foreach ($sessions as $session): 
-            //$cinema = $session->getCinema();
-            ?>
-            <div>
-                <!-- <h4>location:<?php// echo $cinema->getCinemaName(); ?></h4> -->
-                <h4>Session Time: <?php echo $session->getTime(); ?></h4>
-                <h4>Seat Cost: $<?php echo $session->getSeatCost(); ?></h4>
-                <form method="POST" action="">
-                    <input type="hidden" name="sessionId" value="<?php echo $session->getSessionId(); ?>">
-                    <label for="bookingDate">Select Date:</label>
-                    <input type="date" name="bookingDate" required>
-                    <label for="seats">Number of Seats:</label>
-                    <input type="number" name="seats" min="1" required>
-                    <button type="submit">Book Now</button>
-                </form>
-                <div style="margin-bottom: 2rem;"></div>
-        </div>
-        <?php endforeach; ?>
-        </maincontent>
+        <section class="movie-details">
+            <div class="movie-details-content">
+                <h1>Movie</h1>
+                <h4><?php echo($movie->getMovieName()); ?></h4>
+                <div><img class="poster-img" src="<?php echo($movie->getPosterFile()); ?>"></div>
+                <div><?php echo($movie->getMovieDescription()); ?></div>
+                </div>
+                <div><iframe width="560" height="315" src="https://www.youtube.com/embed/<?php echo($movie->getTrailerName());?>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
+                <h3>Sessions</h3>
+                <?php $sessions = $movie->getSessions();
+                foreach ($sessions as $session): 
+                    $getCinema = new Session($sessionId=$session->getSessionId());
+                    $getCinema->getSession();
+                    $cinema = $getCinema->getCinema();
+                    ?>
+                    <div>
+                        <h4>Cinema Name: <?php echo $cinemaName = $cinema->getCinemaName(); ?></h4>
+                        <h4>Session Time: <?php echo $session->getTime(); ?></h4>
+                        <h4>Seat Cost: $<?php echo $session->getSeatCost(); ?></h4>
+                        <form method="POST" action="">
+                            <input type="hidden" name="sessionId" value="<?php echo $session->getSessionId(); ?>">
+                            <label for="bookingDate">Select Date:</label>
+                            <input type="date" name="bookingDate" required>
+                            <label for="seats">Number of Seats:</label>
+                            <input type="number" name="seats" min="1" required>
+                            <button type="submit">Book Now</button>
+                        </form>
+                        <div style="margin-bottom: 2rem;"></div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </section>
+    </maincontent>
     <?php
         require('footer.php');
     ?>
